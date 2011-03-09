@@ -2,11 +2,13 @@
 # Trigger build of tar balls for the linaro boards
 #
 
+LINARO_MKTARBALL := device/linaro/common/tasks/mktarball.sh
+
 #######
 ## root tarball
 define build-roottarball-target
     $(hide) echo "Target root fs tarball:" $(INSTALLED_ROOTTARBALL_TARGET)
-    $(hide) $(MKTARBALL) $(FS_GET_STATS) \
+    $(hide) $(LINARO_MKTARBALL) $(FS_GET_STATS) \
                  $(PRODUCT_OUT)/root . $(PRIVATE_ROOT_TAR) \
                  $(INSTALLED_ROOTTARBALL_TARGET)
 endef
