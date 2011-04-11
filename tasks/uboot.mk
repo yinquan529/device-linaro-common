@@ -1,6 +1,5 @@
 android_uboot:
-	rm -fr $(PRODUCT_OUT)/obj/u-boot
-	mkdir $(PRODUCT_OUT)/obj/u-boot
+	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 	cd $(TOP)/u-boot &&\
 	make O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=arm-linux-gnueabi- $(UBOOT_CONFIG) &&\
 	make O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=arm-linux-gnueabi- 
