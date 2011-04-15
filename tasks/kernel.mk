@@ -3,5 +3,5 @@ android_kernel:
 	make ARCH=arm CROSS_COMPILE=../$(TARGET_TOOLS_PREFIX) defconfig $(KERNEL_CONFIG) &&\
 	make ARCH=arm CROSS_COMPILE=../$(TARGET_TOOLS_PREFIX) uImage
 
-$(PRODUCT_OUT)/kernel: android_kernel
-	ln -sf ../../../../kernel/arch/arm/boot/uImage $(PRODUCT_OUT)/kernel
+$(PRODUCT_OUT)/uImage: android_kernel
+	ln -sf ../../../../kernel/arch/arm/boot/uImage $(PRODUCT_OUT)/uImage
