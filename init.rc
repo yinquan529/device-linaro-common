@@ -91,10 +91,10 @@ loglevel 3
 
 on fs
 # mount mmc partitions
-    mount ext4 mmc@blk0p3 /system
-    mount ext4 mmc@blk0p3 /system ro remount
-    mount ext4 mmc@blk0p5 /cache
-    mount ext4 mmc@blk0p6 /data
+    mount ext4 mmc@blk0p2 /system
+    mount ext4 mmc@blk0p2 /system ro remount
+    mount ext4 mmc@blk0p3 /cache
+    mount ext4 mmc@blk0p5 /data
 
 on post-fs
     # once everything is setup, no need to modify /
