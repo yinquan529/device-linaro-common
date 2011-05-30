@@ -14,6 +14,7 @@ PRODUCT_PACKAGES := \
     Email \
     Gallery3D \
     LatinIME \
+    Launcher2 \
     Mms \
     Music \
     Provision \
