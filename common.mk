@@ -22,6 +22,7 @@ PRODUCT_PACKAGES := \
     Updater \
     CalendarProvider \
     SyncProvider \
+    faketsd \
     ZeroXBenchmark \
     libmicro \
     $(ZEROXBENCHMARK_NATIVE_APPS)
