@@ -26,6 +26,7 @@ PRODUCT_PACKAGES := \
     faketsd \
     ZeroXBenchmark \
     libmicro \
+    powertop \
     $(ZEROXBENCHMARK_NATIVE_APPS)
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
