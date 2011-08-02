@@ -1,5 +1,11 @@
-TCDIR = $(shell dirname $(TARGET_TOOLS_PREFIX))
-TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
+TCPREFIX = arm-linux-gnueabi-
+# The 2 lines below (instead of the one above) are actually the right
+# thing to do -- grabbing the toolchain we're meant to use.
+# Unfortunately the current (4.6-2011.07-0-8-2011-07-25_12-42-06-linux-x86)
+# ld fails to link u-boot, so we revert to the old behavior (since it
+# picks up an older, working ld on the build machines) for now.
+#TCDIR = $(shell dirname $(TARGET_TOOLS_PREFIX))
+#TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
 
 android_uboot:
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
