@@ -91,13 +91,12 @@ loglevel 3
 
 on fs
 # mount mmc partitions
-# mmcblk0p1: boot loader
-# mmcblk0p2: /boot
-    mount ext4 /dev/block/mmcblk0p3 /system ro
+# mmcblk0p1: /boot
+    mount ext4 /dev/block/mmcblk0p2 /system ro
+    mount ext4 /dev/block/mmcblk0p3 /cache
 # mmcblk0p4: extended partition container
-    mount ext4 /dev/block/mmcblk0p5 /cache
-    mount ext4 /dev/block/mmcblk0p6 /data
-# mmcblk0p7: /sdcard
+    mount ext4 /dev/block/mmcblk0p5 /data
+# mmcblk0p6: /sdcard
 
 on post-fs
     # once everything is setup, no need to modify /
