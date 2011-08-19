@@ -1,9 +1,32 @@
 
 ifeq ($(TARGET_USE_UBOOT),true)
-bootfiles: $(PRODUCT_OUT)/u-boot.bin 
+u-boot: $(PRODUCT_OUT)/u-boot.bin
+else
+u-boot: 
 endif
 
-bootfiles:
+.PHONY: xloader-config
+.PHONY:	x-loader
+.PHONY: cleanup
+ifeq ($(TARGET_USE_XLOADER),true)
+cleanup:
+	cd $(TOP)/device/linaro/x-loader &&\
+	make mrproper
+
+xloader-config: cleanup
+	cd $(TOP)/device/linaro/x-loader &&\
+	make $(XLOADER_CONFIG)
+
+x-loader: xloader-config
+	cd $(TOP)/device/linaro/x-loader &&\
+	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) all
+else
+xloader-config:
+x-loader:
+endif
+
+.PHONY:	copybootfiles
+copybootfiles:	x-loader
 	$(hide) mkdir -p $(PRODUCT_OUT)/boot
 ifeq ($(TARGET_USE_UBOOT),true)
 	cp $(PRODUCT_OUT)/u-boot.bin $(PRODUCT_OUT)/boot
@@ -12,7 +35,8 @@ ifeq ($(TARGET_PRODUCT), iMX53)
 endif
 endif
 ifeq ($(TARGET_USE_XLOADER),true)
-	cp $(XLOADER_BINARY) $(PRODUCT_OUT)/boot
+	cp $(TOP)/device/linaro/x-loader/MLO $(PRODUCT_OUT)/boot
 endif
 
-$(INSTALLED_BOOTTARBALL_TARGET): bootfiles
+$(INSTALLED_BOOTTARBALL_TARGET): copybootfiles
+
