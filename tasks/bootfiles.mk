@@ -1,4 +1,4 @@
-
+.PHONY: u-boot
 ifeq ($(TARGET_USE_UBOOT),true)
 u-boot: $(PRODUCT_OUT)/u-boot.bin
 else
@@ -26,7 +26,7 @@ x-loader:
 endif
 
 .PHONY:	copybootfiles
-copybootfiles:	x-loader
+copybootfiles:	x-loader u-boot
 	$(hide) mkdir -p $(PRODUCT_OUT)/boot
 ifeq ($(TARGET_USE_UBOOT),true)
 	cp $(PRODUCT_OUT)/u-boot.bin $(PRODUCT_OUT)/boot
