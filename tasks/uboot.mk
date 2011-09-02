@@ -29,3 +29,12 @@ ifeq ($(TARGET_PRODUCT), origen)
 	mkdir -p $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/obj/u-boot/mmc_spl/u-boot-mmc-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 endif
+
+
+ifeq ($(TARGET_PRODUCT), pandaboard)
+$(PRODUCT_OUT)/u-boot.img: android_uboot
+	ln -sf obj/u-boot/u-boot.img $(PRODUCT_OUT)/u-boot.img
+
+$(PRODUCT_OUT)/MLO: android_uboot
+	ln -sf obj/u-boot/MLO $(PRODUCT_OUT)/MLO
+endif
