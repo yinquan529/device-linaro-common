@@ -1,3 +1,12 @@
+.PHONY: u-boot-img mlo
+ifeq ($(TARGET_PRODUCT), pandaboard)
+u-boot-img: $(PRODUCT_OUT)/u-boot.img
+mlo: $(PRODUCT_OUT)/MLO
+else
+u-boot-img:
+mlo:
+endif
+
 .PHONY: u-boot
 ifeq ($(TARGET_USE_UBOOT),true)
 u-boot: $(PRODUCT_OUT)/u-boot.bin
@@ -26,8 +35,12 @@ x-loader:
 endif
 
 .PHONY:	copybootfiles
-copybootfiles:	x-loader u-boot
+copybootfiles:	x-loader u-boot u-boot-img mlo
 	$(hide) mkdir -p $(PRODUCT_OUT)/boot
+ifeq ($(TARGET_PRODUCT), pandaboard)
+	cp $(PRODUCT_OUT)/u-boot.img $(PRODUCT_OUT)/boot
+	cp $(PRODUCT_OUT)/MLO $(PRODUCT_OUT)/boot
+endif
 ifeq ($(TARGET_USE_UBOOT),true)
 	cp $(PRODUCT_OUT)/u-boot.bin $(PRODUCT_OUT)/boot
 ifeq ($(TARGET_PRODUCT), iMX53)
