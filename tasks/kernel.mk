@@ -1,4 +1,4 @@
-android_kernel:
+android_kernel: $(ACP)
 	cd $(TOP)/kernel &&\
 	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
 	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage &&\
