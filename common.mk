@@ -19,6 +19,7 @@ PRODUCT_PACKAGES := \
     Music \
     Provision \
     Settings \
+    SystemUI \
     Sync \
     Updater \
     CalendarProvider \
