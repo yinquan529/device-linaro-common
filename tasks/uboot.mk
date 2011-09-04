@@ -27,7 +27,7 @@ ifeq ($(TARGET_PRODUCT), iMX53)
 endif
 ifeq ($(TARGET_PRODUCT), origen)
 	mkdir -p $(PRODUCT_OUT)/boot
-	cp $(PRODUCT_OUT)/obj/u-boot/mmc_spl/u-boot-mmc-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
+	cp $(PRODUCT_OUT)/obj/u-boot/spl/origen-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 endif
 
 
