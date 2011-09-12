@@ -28,6 +28,8 @@ PRODUCT_PACKAGES := \
     ZeroXBenchmark \
     libmicro \
     powertop \
-    $(ZEROXBENCHMARK_NATIVE_APPS)
+    $(ZEROXBENCHMARK_NATIVE_APPS) \
+    GLMark2 \
+    libglmark2-android
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
