@@ -162,6 +162,10 @@ on post-fs
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
 
+    # Setup paths used for socket communication with the dhcp daemon(dhcpd)
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+
     # create dalvik-cache and double-check the perms
     mkdir /data/dalvik-cache 0771 system system
     chown system system /data/dalvik-cache
@@ -309,6 +313,11 @@ on property:persist.service.adb.enable=1
 
 on property:persist.service.adb.enable=0
     stop adbd
+
+service dhcpcd_eth0 /system/bin/dhcpcd -dABKL
+    group dhcp
+    disabled
+    oneshot
 
 service servicemanager /system/bin/servicemanager
     user system
