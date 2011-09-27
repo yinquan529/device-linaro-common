@@ -28,6 +28,7 @@ PRODUCT_PACKAGES := \
     ZeroXBenchmark \
     libmicro \
     powertop \
+    mmtest \
     $(ZEROXBENCHMARK_NATIVE_APPS) \
     GLMark2 \
     libglmark2-android
