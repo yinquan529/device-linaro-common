@@ -31,6 +31,7 @@ PRODUCT_PACKAGES := \
     mmtest \
     $(ZEROXBENCHMARK_NATIVE_APPS) \
     GLMark2 \
-    libglmark2-android
+    libglmark2-android \
+    gatord
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
