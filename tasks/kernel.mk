@@ -1,14 +1,14 @@
 android_kernel:
 	cd $(TOP)/kernel &&\
-	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
-	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage
+	$(MAKE) -j1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage
 
 android_kernel_modules: $(PRODUCT_OUT)/uImage $(ACP)
 	cd $(TOP)/kernel &&\
-	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) modules
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) modules
 	mkdir -p $(TOP)/kernel/modules_for_android
 	cd $(TOP)/kernel &&\
-	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) modules_install INSTALL_MOD_PATH=modules_for_android
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) modules_install INSTALL_MOD_PATH=modules_for_android
 	mkdir -p $(TARGET_OUT)/modules
 	find kernel/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 
@@ -17,7 +17,7 @@ ifeq ($(TARGET_USE_GATOR),true)
 KERNEL_PATH:=$(shell pwd)/kernel
 gator_driver: $(ACP)
 	cd $(TOP)/external/gator/driver &&\
-	make ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) -C $(KERNEL_PATH) M=`pwd` modules
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
 	find . -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 else

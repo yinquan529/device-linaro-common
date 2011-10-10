@@ -11,13 +11,13 @@ android_uboot:
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 	cd $(TOP)/u-boot &&\
 	export PATH=$(UBOOT_TCDIR):$(PATH) && \
-	make O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) &&\
-	make O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
+	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) &&\
+	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
 ifeq ($(TARGET_PRODUCT), iMX53)
 	cd $(TOP)/u-boot &&\
 	export PATH=$(UBOOT_TCDIR):$(PATH) && \
-	make CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
-	make CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
+	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
+	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
 endif
 
 $(PRODUCT_OUT)/u-boot.bin: android_uboot
