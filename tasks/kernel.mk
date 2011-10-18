@@ -1,4 +1,4 @@
-android_kernel:
+android_kernel: $(PRODUCT_OUT)/u-boot.bin
 	cd $(TOP)/kernel &&\
 	$(MAKE) -j1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage
