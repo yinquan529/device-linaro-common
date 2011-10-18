@@ -1,10 +1,12 @@
 android_kernel: $(PRODUCT_OUT)/u-boot.bin
 	cd $(TOP)/kernel &&\
+	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
 	$(MAKE) -j1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage
 
 android_kernel_modules: $(PRODUCT_OUT)/uImage $(ACP)
 	cd $(TOP)/kernel &&\
+	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) modules
 	mkdir -p $(TOP)/kernel/modules_for_android
 	cd $(TOP)/kernel &&\

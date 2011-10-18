@@ -7,7 +7,7 @@ UBOOT_TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
 # uncommenting the one below.
 #UBOOT_TCPREFIX = arm-linux-gnueabi-
 
-android_uboot:
+android_uboot: $(ACP)
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 	cd $(TOP)/u-boot &&\
 	export PATH=$(UBOOT_TCDIR):$(PATH) && \
@@ -19,6 +19,7 @@ ifeq ($(TARGET_PRODUCT), iMX53)
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
 endif
+	cd $(TOP) && $(ACP) -fept $(PRODUCT_OUT)/obj/u-boot/tools/mkimage $(BUILD_OUT_EXECUTABLES)/
 
 $(PRODUCT_OUT)/u-boot.bin: android_uboot
 	ln -sf obj/u-boot/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
