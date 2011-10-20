@@ -89,9 +89,6 @@ loglevel 3
     # 5.0 %
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
-    # Set access for camera
-    chmod 0666 /dev/video0
-
 on fs
 # mount mmc partitions
 # mmcblk0p1: /boot
@@ -108,6 +105,9 @@ on post-fs
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+
+    # Set access for camera
+    chmod 0666 /dev/video0
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
