@@ -17,7 +17,7 @@ android_kernel_modules: $(PRODUCT_OUT)/uImage $(ACP)
 
 ifeq ($(TARGET_USE_GATOR),true)
 KERNEL_PATH:=$(shell pwd)/kernel
-gator_driver: $(ACP)
+gator_driver: $(PRODUCT_OUT)/uImage $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
