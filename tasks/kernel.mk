@@ -21,7 +21,7 @@ gator_driver: $(PRODUCT_OUT)/uImage $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
-	find . -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
+	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 else
 gator_driver:
 endif
