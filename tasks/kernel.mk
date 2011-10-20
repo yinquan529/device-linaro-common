@@ -4,7 +4,7 @@ android_kernel: $(PRODUCT_OUT)/u-boot.bin
 	$(MAKE) -j1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage
 
-android_kernel_modules: $(PRODUCT_OUT)/uImage $(ACP)
+android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) modules
@@ -17,7 +17,7 @@ android_kernel_modules: $(PRODUCT_OUT)/uImage $(ACP)
 
 ifeq ($(TARGET_USE_GATOR),true)
 KERNEL_PATH:=$(shell pwd)/kernel
-gator_driver: $(PRODUCT_OUT)/uImage $(ACP)
+gator_driver: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
@@ -26,9 +26,9 @@ else
 gator_driver:
 endif
 
-out_of_tree_modules: $(PRODUCT_OUT)/uImage gator_driver
+out_of_tree_modules: $(INSTALLED_KERNEL_TARGET) gator_driver
 
-$(PRODUCT_OUT)/uImage: android_kernel
-	ln -sf ../../../../kernel/arch/arm/boot/uImage $(PRODUCT_OUT)/uImage
+$(INSTALLED_KERNEL_TARGET): android_kernel
+	ln -sf ../../../../kernel/arch/arm/boot/uImage $(INSTALLED_KERNEL_TARGET)
 
 $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
