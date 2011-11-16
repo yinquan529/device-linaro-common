@@ -43,7 +43,7 @@ $(PRODUCT_OUT)/u-boot.img: android_uboot
 $(PRODUCT_OUT)/MLO: android_uboot
 	ln -sf obj/u-boot/MLO $(PRODUCT_OUT)/MLO
 endif
-ifeq ($(TARGET_PRODUCT), panda)
+ifeq ($(TARGET_PRODUCT), full_panda)
 $(PRODUCT_OUT)/u-boot.img: android_uboot
 	ln -sf obj/u-boot/u-boot.img $(PRODUCT_OUT)/u-boot.img
 

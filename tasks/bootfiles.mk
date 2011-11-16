@@ -3,7 +3,7 @@ ifeq ($(TARGET_PRODUCT), pandaboard)
 u-boot-img: $(PRODUCT_OUT)/u-boot.img
 mlo: $(PRODUCT_OUT)/MLO
 else
-ifeq ($(TARGET_PRODUCT), panda)
+ifeq ($(TARGET_PRODUCT), full_panda)
 u-boot-img: $(PRODUCT_OUT)/u-boot.img
 mlo: $(PRODUCT_OUT)/MLO
 else
@@ -46,7 +46,7 @@ ifeq ($(TARGET_PRODUCT), pandaboard)
 	cp $(PRODUCT_OUT)/u-boot.img $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/MLO $(PRODUCT_OUT)/boot
 endif
-ifeq ($(TARGET_PRODUCT), panda)
+ifeq ($(TARGET_PRODUCT), full_panda)
 	cp $(PRODUCT_OUT)/u-boot.img $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/MLO $(PRODUCT_OUT)/boot
 endif
