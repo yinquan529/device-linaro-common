@@ -3,8 +3,13 @@ ifeq ($(TARGET_PRODUCT), pandaboard)
 u-boot-img: $(PRODUCT_OUT)/u-boot.img
 mlo: $(PRODUCT_OUT)/MLO
 else
+ifeq ($(TARGET_PRODUCT), panda)
+u-boot-img: $(PRODUCT_OUT)/u-boot.img
+mlo: $(PRODUCT_OUT)/MLO
+else
 u-boot-img:
 mlo:
+endif
 endif
 
 .PHONY: u-boot
@@ -38,6 +43,10 @@ endif
 copybootfiles:	x-loader u-boot u-boot-img mlo
 	$(hide) mkdir -p $(PRODUCT_OUT)/boot
 ifeq ($(TARGET_PRODUCT), pandaboard)
+	cp $(PRODUCT_OUT)/u-boot.img $(PRODUCT_OUT)/boot
+	cp $(PRODUCT_OUT)/MLO $(PRODUCT_OUT)/boot
+endif
+ifeq ($(TARGET_PRODUCT), panda)
 	cp $(PRODUCT_OUT)/u-boot.img $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/MLO $(PRODUCT_OUT)/boot
 endif
