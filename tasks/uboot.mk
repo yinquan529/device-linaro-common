@@ -7,10 +7,14 @@ UBOOT_TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
 # uncommenting the one below.
 #UBOOT_TCPREFIX = arm-linux-gnueabi-
 
+# u-boot can't be built with gold - so we force BFD LD into the
+# PATH ahead of everything else
+
 android_uboot: $(ACP)
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 	cd $(TOP)/u-boot &&\
-	export PATH=$(UBOOT_TCDIR):$(PATH) && \
+	if [ -e $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd ]; then ln -sf $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd $(UBOOT_TCPREFIX)ld; ln -sf $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd ld; fi &&\
+	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
 	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) &&\
 	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
 ifeq ($(TARGET_PRODUCT), iMX53)
