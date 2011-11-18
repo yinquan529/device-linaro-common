@@ -1,9 +1,8 @@
 android_kernel: $(PRODUCT_OUT)/u-boot.bin
 	cd $(TOP)/kernel &&\
-	if [ -e $(TARGET_TOOLS_PREFIX)ld.bfd ]; then LD=$(TARGET_TOOLS_PREFIX)ld.bfd; else LD=$(TARGET_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) V=1 -j1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
-	$(MAKE) V=1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) LD=$$LD uImage
+	$(MAKE) -j1 ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) defconfig $(KERNEL_CONFIG) &&\
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX)) uImage
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
