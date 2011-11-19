@@ -19,7 +19,7 @@ android_uboot: $(ACP)
 	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
 ifeq ($(TARGET_PRODUCT), iMX53)
 	cd $(TOP)/u-boot &&\
-	export PATH=$(UBOOT_TCDIR):$(PATH) && \
+	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
 endif
