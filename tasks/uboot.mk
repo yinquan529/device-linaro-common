@@ -1,11 +1,8 @@
-UBOOT_TCDIR = $(shell dirname $(TARGET_TOOLS_PREFIX))
-UBOOT_TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
-
 # u-boot tends to trigger compiler and linker bugs frequently.
 # If you're running into a problem not fixed easily, use an
 # older compiler by commenting out the 2 lines above and
 # uncommenting the one below.
-#UBOOT_TCPREFIX = arm-linux-gnueabi-
+UBOOT_TCPREFIX = arm-linux-gnueabi-
 
 # u-boot can't be built with gold - so we force BFD LD into the
 # PATH ahead of everything else
@@ -13,13 +10,10 @@ UBOOT_TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
 android_uboot: $(ACP)
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 	cd $(TOP)/u-boot &&\
-	if [ -e $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd ]; then ln -sf $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd $(UBOOT_TCPREFIX)ld; fi &&\
-	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
 	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) &&\
 	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
 ifeq ($(TARGET_PRODUCT), iMX53)
 	cd $(TOP)/u-boot &&\
-	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
 endif
