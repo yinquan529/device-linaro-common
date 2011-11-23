@@ -26,6 +26,7 @@ PRODUCT_PACKAGES := \
     SyncProvider \
     faketsd \
     ZeroXBenchmark \
+    hwcomposer.default \
     libmicro \
     powertop \
     mmtest \
