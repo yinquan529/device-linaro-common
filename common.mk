@@ -33,6 +33,11 @@ PRODUCT_PACKAGES := \
     $(ZEROXBENCHMARK_NATIVE_APPS) \
     GLMark2 \
     libglmark2-android \
-    gatord
+    gatord \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    MagicSmokeWallpapers \
+    VisualizationWallpapers \
+    librs_jni
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
