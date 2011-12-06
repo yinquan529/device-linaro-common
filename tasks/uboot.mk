@@ -1,15 +1,17 @@
+ifneq ($(findstring prebuilt,$(TARGET_TOOLS_PREFIX)),)
+# The AOSP prebuilt toolchain is too old to compile
+# current u-boot, so we fall back to a system compiler
+UBOOT_TCDIR = $(shell basename `which arm-linux-gnueabi-gcc`)
+UBOOT_TCPREFIX = arm-linux-gnueabi-
+else
 UBOOT_TCDIR = $(shell dirname $(TARGET_TOOLS_PREFIX))
-UBOOT_TCPREFIX = $(shell basename $(TARGET_TOOLS_PREFIX))
-
-# u-boot tends to trigger compiler and linker bugs frequently.
-# If you're running into a problem not fixed easily, use an
-# older compiler by commenting out the 2 lines above and
-# uncommenting the one below.
-#UBOOT_TCPREFIX = arm-linux-gnueabi-
+# u-boot is not an Android application and should be
+# built with the bare metal toolchain if it is available
+UBOOT_TCPREFIX = $(shell if [ -e $(UBOOT_TCDIR)/arm-eabi-gcc ]; then echo arm-eabi-; else basename $(TARGET_TOOLS_PREFIX); fi)
+endif
 
 # u-boot can't be built with gold - so we force BFD LD into the
 # PATH ahead of everything else
-
 android_uboot: $(ACP)
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 	cd $(TOP)/u-boot &&\
