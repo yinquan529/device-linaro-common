@@ -38,6 +38,7 @@ PRODUCT_PACKAGES := \
     LiveWallpapersPicker \
     MagicSmokeWallpapers \
     VisualizationWallpapers \
-    librs_jni
+    librs_jni \
+    mediaframeworktest
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
