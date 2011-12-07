@@ -35,7 +35,9 @@ ifeq ($(TARGET_USE_GATOR),true)
 KERNEL_PATH:=$(shell pwd)/kernel
 gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/external/gator/driver &&\
-	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN) -C $(KERNEL_PATH) M=`pwd` modules
+	if [ -e $(TARGET_TOOLS_PREFIX)ld.bfd ]; then LD=$(TARGET_TOOLS_PREFIX)ld.bfd; else LD=$(TARGET_TOOLS_PREFIX)ld; fi && \
+	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
 	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 else
