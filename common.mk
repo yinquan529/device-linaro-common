@@ -34,6 +34,7 @@ PRODUCT_PACKAGES := \
     GLMark2 \
     libglmark2-android \
     gatord \
+    LinaroWallpaper \
     LiveWallpapers \
     LiveWallpapersPicker \
     MagicSmokeWallpapers \
