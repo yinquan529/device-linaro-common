@@ -22,7 +22,7 @@ android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
 	if [ -e $(TARGET_TOOLS_PREFIX)ld.bfd ]; then LD=$(TARGET_TOOLS_PREFIX)ld.bfd; else LD=$(TARGET_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN) LD=$$LD modules
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" modules
 	mkdir -p $(TOP)/kernel/modules_for_android
 	cd $(TOP)/kernel &&\
 	if [ -e $(TARGET_TOOLS_PREFIX)ld.bfd ]; then LD=$(TARGET_TOOLS_PREFIX)ld.bfd; else LD=$(TARGET_TOOLS_PREFIX)ld; fi && \
