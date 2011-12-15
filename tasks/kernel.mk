@@ -6,9 +6,9 @@ ifneq ($(findstring prebuilt,$(TARGET_TOOLS_PREFIX)),)
 # The prebuilt toolchain is way too old to compile
 # current kernels - so we use a system wide toolchain
 # installation if available.
-KERNEL_TOOLS_PREFIX := $(shell which arm-linux-gnueabi-gcc |sed -e 's,gcc,,')
+KERNEL_TOOLS_PREFIX ?= $(shell which arm-linux-gnueabi-gcc |sed -e 's,gcc,,')
 else
-KERNEL_TOOLS_PREFIX := $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX))
+KERNEL_TOOLS_PREFIX ?= $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX))
 endif
 
 android_kernel: $(PRODUCT_OUT)/u-boot.bin
