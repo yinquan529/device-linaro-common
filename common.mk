@@ -42,6 +42,11 @@ PRODUCT_PACKAGES := \
     librs_jni \
     mediaframeworktest
 
+#packages we are using for benchmarking
+PRODUCT_PACKAGES += \
+    v8shell \
+    skia_bench
+
 PRODUCT_COPY_FILES := \
 	device/linaro/common/wallpaper_info.xml:data/system/wallpaper_info.xml
 
