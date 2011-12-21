@@ -42,4 +42,7 @@ PRODUCT_PACKAGES := \
     librs_jni \
     mediaframeworktest
 
+PRODUCT_COPY_FILES := \
+	device/linaro/common/wallpaper_info.xml:data/system/wallpaper_info.xml
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
