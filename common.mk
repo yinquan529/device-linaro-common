@@ -42,4 +42,16 @@ PRODUCT_PACKAGES := \
     librs_jni \
     mediaframeworktest
 
+#packages we are using for benchmarking
+PRODUCT_PACKAGES += \
+    v8shell \
+    skia_bench
+
+V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
+	$(js):data/benchmark/v8/$(notdir $(js)))
+
+PRODUCT_COPY_FILES := \
+	device/linaro/common/wallpaper_info.xml:data/system/wallpaper_info.xml \
+	$(V8BENCHMARKS)
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
