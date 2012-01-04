@@ -11,25 +11,26 @@ else
 KERNEL_TOOLS_PREFIX ?= $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX))
 endif
 
+LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
+
 android_kernel: $(PRODUCT_OUT)/u-boot.bin
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic -mno-unaligned-access" $(KERNEL_VERBOSE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
-	$(MAKE) $(KERNEL_VERBOSE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic -mno-unaligned-access" LD=$$LD uImage
+	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
+	$(MAKE) $(KERNEL_VERBOSE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD uImage
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic -mno-unaligned-access" modules
-	mkdir -p $(TOP)/kernel/modules_for_android
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" modules
+	mkdir -p modules_for_android
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
-	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic -mno-unaligned-access" LD=$$LD modules_install INSTALL_MOD_PATH=modules_for_android
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD modules_install INSTALL_MOD_PATH=modules_for_android
 	mkdir -p $(TARGET_OUT)/modules
-	find kernel/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
-
+	find modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 
 ifeq ($(TARGET_USE_GATOR),true)
 KERNEL_PATH:=$(shell pwd)/kernel
@@ -37,7 +38,7 @@ gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic -mno-unaligned-access" -C $(KERNEL_PATH) M=`pwd` modules
+	$(MAKE) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
 	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 else
