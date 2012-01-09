@@ -13,37 +13,37 @@ endif
 
 LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
 
-ODIR=$(shell readlink -f $(PRODUCT_OUT)/obj/kernel)
+KERNEL_OUT=$(shell readlink -f $(PRODUCT_OUT)/obj/kernel)
 
 android_kernel: $(PRODUCT_OUT)/u-boot.bin
-	mkdir -p $(ODIR)
+	mkdir -p $(KERNEL_OUT)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(ODIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
-	$(MAKE) $(KERNEL_VERBOSE) O=$(ODIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD uImage
+	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
+	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD uImage
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) O=$(ODIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" modules
-	mkdir -p $(ODIR)/modules_for_android
+	$(MAKE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" modules
+	mkdir -p $(KERNEL_OUT)/modules_for_android
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
-	$(MAKE) O=$(ODIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD modules_install INSTALL_MOD_PATH=$(ODIR)/modules_for_android
+	$(MAKE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD modules_install INSTALL_MOD_PATH=$(KERNEL_OUT)/modules_for_android
 	mkdir -p $(TARGET_OUT)/modules
-	find $(ODIR)/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
+	find $(KERNEL_OUT)/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 
 #NOTE: the gator driver's Makefile wasn't done properly and doesn't put build
-#      artifacts in the O=$(ODIR)
+#      artifacts in the O=$(KERNEL_OUT)
 ifeq ($(TARGET_USE_GATOR),true)
 KERNEL_PATH:=$(shell pwd)/kernel
 gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) O=$(ODIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" -C $(KERNEL_PATH) M=`pwd` modules
+	$(MAKE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
 	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 else
@@ -53,7 +53,7 @@ endif
 out_of_tree_modules: $(INSTALLED_KERNEL_TARGET) gator_driver
 
 $(INSTALLED_KERNEL_TARGET): android_kernel
-	ln -sf $(ODIR)/arch/arm/boot/uImage $(INSTALLED_KERNEL_TARGET)
+	ln -sf $(KERNEL_OUT)/arch/arm/boot/uImage $(INSTALLED_KERNEL_TARGET)
 
 $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
 
@@ -72,9 +72,9 @@ define MAKE_DEVICE_TREE
 $(1): $$(INSTALLED_KERNEL_TARGET) $$(ACP)
 	cd $$(TOP)/kernel && \
 	export PATH=../$$(BUILD_OUT_EXECUTABLES):$$(PATH) && \
-	$$(MAKE) O=$$(ODIR) ARCH=arm CROSS_COMPILE=$$(KERNEL_TOOLS_PREFIX) $2.dtb
+	$$(MAKE) O=$$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$$(KERNEL_TOOLS_PREFIX) $2.dtb
 	@mkdir -p $$(dir $$@)
-	$$(ACP) -fpt $$(ODIR)/arch/arm/boot/$2.dtb $$@
+	$$(ACP) -fpt $$(KERNEL_OUT)/arch/arm/boot/$2.dtb $$@
 
 endef
 
