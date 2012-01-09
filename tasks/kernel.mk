@@ -56,3 +56,39 @@ $(INSTALLED_KERNEL_TARGET): android_kernel
 	ln -sf $(ODIR)/arch/arm/boot/uImage $(INSTALLED_KERNEL_TARGET)
 
 $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
+
+
+#
+# Generate a rule to build a device-tree.
+#
+# Usage: $(eval $(call MAKE_DEVICE_TREE, target-blob, source-name))
+#
+#   target-blob     Path and name for generated device tree blob
+#   source-name     Name of source in arch/arm/boot/dts/ without trailing '.dts'
+#
+#
+define MAKE_DEVICE_TREE
+
+$(1): $$(INSTALLED_KERNEL_TARGET) $$(ACP)
+	cd $$(TOP)/kernel && \
+	export PATH=../$$(BUILD_OUT_EXECUTABLES):$$(PATH) && \
+	$$(MAKE) O=$$(ODIR) ARCH=arm CROSS_COMPILE=$$(KERNEL_TOOLS_PREFIX) $2.dtb
+	@mkdir -p $$(dir $$@)
+	$$(ACP) -fpt $$(ODIR)/arch/arm/boot/$2.dtb $$@
+
+endef
+
+#
+# DEVICE_TREES contains a list of device-trees to build, each
+# entry in the list is in the form <source-name>:<blob-name>
+#
+DEVICE_TREE_TARGETS :=
+$(foreach _ub,$(DEVICE_TREES),                             \
+    $(eval _source := $(call word-colon,1,$(_ub)))         \
+    $(eval _blob := $(call word-colon,2,$(_ub)))           \
+    $(eval _target := $(PRODUCT_OUT)/boot/$(_blob))        \
+    $(eval $(call MAKE_DEVICE_TREE,$(_target),$(_source))) \
+    $(eval DEVICE_TREE_TARGETS += $(_target))              \
+    )
+
+$(INSTALLED_BOOTTARBALL_TARGET): $(DEVICE_TREE_TARGETS)
