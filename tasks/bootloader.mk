@@ -2,6 +2,12 @@
 
 BOOTLOADER_TARGETS :=
 
+# Bootloaders have their own separate makefiles and we don't track the
+# dependencies these, therefore we need to remake them every time in case
+# files need updating. To facilitate this, bootloader rules will depend on
+# this phony target...
+.PHONY : FORCE_BOOTLOADER_REMAKE
+
 #
 # Generate a rule to build U-Boot.
 #
@@ -13,7 +19,7 @@ BOOTLOADER_TARGETS :=
 #
 define MAKE_UBOOT
 
-$(1): $$(ACP)
+$(1): $$(ACP) FORCE_BOOTLOADER_REMAKE
 	$$(eval _obj := $$(PRODUCT_OUT)/obj/u-boot.$(2))
 	@mkdir -p $$(_obj)
 	cd $$(TOP)/u-boot && \
