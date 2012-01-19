@@ -15,6 +15,12 @@ UBOOT_TCPREFIX = $(shell if [ -e $(UBOOT_TCDIR)/arm-eabi-gcc ]; then echo arm-ea
 endif
 endif
 
+
+ifeq ($(USE_PREBUILT_UBOOT),)
+USE_PREBUILT_UBOOT=false
+endif
+
+ifeq ($(USE_PREBUILT_UBOOT), false)
 # u-boot can't be built with gold - so we force BFD LD into the
 # PATH ahead of everything else
 android_uboot: $(ACP)
@@ -41,19 +47,40 @@ ifeq ($(TARGET_PRODUCT), origen)
 	mkdir -p $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/obj/u-boot/spl/origen-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 endif
-
+endif
 
 ifeq ($(TARGET_PRODUCT), pandaboard)
+ifeq ($(USE_PREBUILT_UBOOT), true)
+$(PRODUCT_OUT)/u-boot.bin:
+	ln -sf ../../../../device/linaro/pandaboard/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
+$(PRODUCT_OUT)/u-boot.img:
+	ln -sf ../../../../device/linaro/pandaboard/u-boot.bin $(PRODUCT_OUT)/u-boot.img
+
+$(PRODUCT_OUT)/MLO:
+	ln -sf ../../../../device/linaro/pandaboard/MLO $(PRODUCT_OUT)/MLO
+else
 $(PRODUCT_OUT)/u-boot.img: android_uboot
 	ln -sf obj/u-boot/u-boot.img $(PRODUCT_OUT)/u-boot.img
 
 $(PRODUCT_OUT)/MLO: android_uboot
 	ln -sf obj/u-boot/MLO $(PRODUCT_OUT)/MLO
 endif
+endif
+
 ifeq ($(TARGET_PRODUCT), full_panda)
+ifeq ($(USE_PREBUILT_UBOOT), true)
+$(PRODUCT_OUT)/u-boot.bin:
+	ln -sf ../../../../device/ti/panda/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
+$(PRODUCT_OUT)/u-boot.img:
+	ln -sf ../../../../device/ti/panda/u-boot.bin $(PRODUCT_OUT)/u-boot.img
+
+$(PRODUCT_OUT)/MLO:
+	ln -sf ../../../../device/ti/panda/MLO $(PRODUCT_OUT)/MLO
+else
 $(PRODUCT_OUT)/u-boot.img: android_uboot
 	ln -sf obj/u-boot/u-boot.img $(PRODUCT_OUT)/u-boot.img
 
 $(PRODUCT_OUT)/MLO: android_uboot
 	ln -sf obj/u-boot/MLO $(PRODUCT_OUT)/MLO
+endif
 endif
