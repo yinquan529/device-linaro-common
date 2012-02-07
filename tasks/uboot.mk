@@ -36,11 +36,20 @@ ifeq ($(TARGET_PRODUCT), iMX53)
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
 endif
+ifeq ($(TARGET_PRODUCT), iMX6)
+	cd $(TOP)/u-boot &&\
+	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
+	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
+	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
+endif
 	cd $(TOP) && $(ACP) -fept $(PRODUCT_OUT)/obj/u-boot/tools/mkimage $(BUILD_OUT_EXECUTABLES)/
 
 $(PRODUCT_OUT)/u-boot.bin: android_uboot
 	ln -sf obj/u-boot/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
 ifeq ($(TARGET_PRODUCT), iMX53)
+	cp $(TOP)/u-boot/u-boot.imx $(PRODUCT_OUT)/u-boot.imx
+endif
+ifeq ($(TARGET_PRODUCT), iMX6)
 	cp $(TOP)/u-boot/u-boot.imx $(PRODUCT_OUT)/u-boot.imx
 endif
 ifeq ($(TARGET_PRODUCT), origen)
