@@ -55,6 +55,9 @@ ifeq ($(TARGET_USE_UBOOT),true)
 ifeq ($(TARGET_PRODUCT), iMX53)
 	cp -L $(PRODUCT_OUT)/u-boot.imx $(PRODUCT_OUT)/boot
 endif
+ifeq ($(TARGET_PRODUCT), iMX6)
+	cp -L $(PRODUCT_OUT)/u-boot.imx $(PRODUCT_OUT)/boot
+endif
 endif
 ifeq ($(TARGET_USE_XLOADER),true)
 	cp $(TOP)/device/linaro/x-loader/MLO $(PRODUCT_OUT)/boot
