@@ -22,6 +22,13 @@ android_kernel: $(PRODUCT_OUT)/u-boot.bin
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
 	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
 	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD uImage
+ifeq ($(TARGET_PRODUCT), iMX6)
+	# DeviceTree bits...
+	cd $(TOP)/kernel &&\
+	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
+	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
+	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD imx6q-sabrelite.dtb
+endif
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
