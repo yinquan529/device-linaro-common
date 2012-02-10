@@ -40,7 +40,12 @@ PRODUCT_PACKAGES := \
     MagicSmokeWallpapers \
     VisualizationWallpapers \
     librs_jni \
-    mediaframeworktest
+    mediaframeworktest \
+    libtinyalsa \
+    tinyplay \
+    tinycap \
+    tinymix \
+    libaudioutils
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
