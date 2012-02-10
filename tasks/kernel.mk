@@ -27,7 +27,9 @@ ifeq ($(TARGET_PRODUCT), iMX6)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD imx6q-sabrelite.dtb
+	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD imx6q-sabrelite.dtb && \
+	mkdir -p $(PRODUCT_OUT)/boot && \
+	cp $(PRODUCT_OUT)/obj/kernel/arch/arm/boot/imx6q-sabrelite.dtb $(PRODUCT_OUT)/boot/board.dtb
 endif
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
