@@ -47,12 +47,22 @@ android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 #NOTE: the gator driver's Makefile wasn't done properly and doesn't put build
 #      artifacts in the O=$(KERNEL_OUT)
 ifeq ($(TARGET_USE_GATOR),true)
+
 KERNEL_PATH:=$(shell pwd)/kernel
+
+ifneq ($(TARGET_GATOR_WITH_MALI_SUPPORT),)
+ifndef TARGET_MALI_DRIVER_DIR
+$(error TARGET_MALI_DRIVER_DIR must be defined if TARGET_GATOR_WITH_MALI_SUPPORT is.)
+endif
+GATOR_EXTRA_CFLAGS += -DMALI_SUPPORT=$(TARGET_GATOR_WITH_MALI_SUPPORT) -I$(KERNEL_PATH)/$(TARGET_MALI_DRIVER_DIR)
+GATOR_EXTRA_MAKE_ARGS += GATOR_WITH_MALI_SUPPORT=$(TARGET_GATOR_WITH_MALI_SUPPORT)
+endif
+
 gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" -C $(KERNEL_PATH) M=`pwd` modules
+	$(MAKE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic $(GATOR_EXTRA_CFLAGS)" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(GATOR_EXTRA_MAKE_ARGS) -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_OUT)/modules
 	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
 else
