@@ -1,3 +1,4 @@
+ifeq ($(TARGET_USE_UBOOT), true)
 ifneq ($(UBOOT_TOOLS_PREFIX),)
 UBOOT_TCDIR = $(realpath $(shell dirname $(UBOOT_TOOLS_PREFIX)))
 UBOOT_TCPREFIX = $(shell basename $(UBOOT_TOOLS_PREFIX))
@@ -92,4 +93,7 @@ $(PRODUCT_OUT)/u-boot.img: android_uboot
 $(PRODUCT_OUT)/MLO: android_uboot
 	ln -sf obj/u-boot/MLO $(PRODUCT_OUT)/MLO
 endif
+endif
+else
+$(PRODUCT_OUT)/u-boot.bin:
 endif
