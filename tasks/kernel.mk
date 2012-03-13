@@ -102,3 +102,7 @@ $(foreach _ub,$(DEVICE_TREES),                             \
     )
 
 $(INSTALLED_BOOTTARBALL_TARGET): $(DEVICE_TREE_TARGETS)
+
+ifeq ($(TARGET_PRODUCT), vexpress_rtsm)
+bootwrapper: $(DEVICE_TREE_TARGETS)
+endif
