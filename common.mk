@@ -45,7 +45,8 @@ PRODUCT_PACKAGES := \
     tinyplay \
     tinycap \
     tinymix \
-    libaudioutils
+    libaudioutils \
+    ConnectivityManagerTest
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
