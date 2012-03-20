@@ -46,7 +46,10 @@ PRODUCT_PACKAGES := \
     tinycap \
     tinymix \
     libaudioutils \
-    ConnectivityManagerTest
+    ConnectivityManagerTest \
+    iozone \
+    memtester \
+    stress
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
