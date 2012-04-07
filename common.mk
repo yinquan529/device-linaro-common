@@ -49,7 +49,8 @@ PRODUCT_PACKAGES := \
     ConnectivityManagerTest \
     iozone \
     memtester \
-    stress
+    stress \
+    stressapptest
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
