@@ -50,7 +50,8 @@ PRODUCT_PACKAGES := \
     iozone \
     memtester \
     stress \
-    stressapptest
+    stressapptest \
+    DisableSuspend
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
