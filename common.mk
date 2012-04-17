@@ -51,7 +51,9 @@ PRODUCT_PACKAGES := \
     memtester \
     stress \
     stressapptest \
-    DisableSuspend
+    DisableSuspend \
+    libncurses \
+    htop
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
