@@ -65,6 +65,7 @@ V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
 
 PRODUCT_COPY_FILES := \
 	device/linaro/common/wallpaper_info.xml:data/system/wallpaper_info.xml \
+	device/linaro/common/disablesuspend.sh:system/bin/disablesuspend.sh \
 	$(V8BENCHMARKS)
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
