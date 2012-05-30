@@ -12,16 +12,32 @@ KERNEL_TOOLS_PREFIX ?= $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREF
 endif
 
 LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
+REALTOP=$(realpath $(TOP))
 
 KERNEL_OUT=$(shell readlink -f $(PRODUCT_OUT)/obj/kernel)
 
-android_kernel: $(PRODUCT_OUT)/u-boot.bin
+# We can build perf if it's included in the kernel and has the
+# Android compatibility patch in
+ifneq ($(wildcard $(TOP)/kernel/tools/perf/compat-android.h),)
+	INCLUDE_PERF := 1
+	PERF_DEP := out/target/product/pandaboard/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a
+endif
+
+android_kernel: $(PRODUCT_OUT)/u-boot.bin $(PERF_DEP)
 	mkdir -p $(KERNEL_OUT)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
 	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
 	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD uImage
+ifeq ($(INCLUDE_PERF),1)
+	cd $(TOP)/kernel/tools/perf &&\
+	mkdir -p $(KERNEL_OUT)/tools/perf &&\
+	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
+	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
+	$(MAKE) EXTRA_CFLAGS="$(TARGET_EXTRA_CFLAGS) $(LOCAL_CFLAGS) -isystem $(REALTOP)/bionic/libc/include -isystem $(REALTOP)/bionic/libc/kernel/common -isystem $(REALTOP)/bionic/libc/kernel/arch-arm -isystem $(REALTOP)/bionic/libc/arch-arm/include -I$(REALTOP)/external/elfutils/libelf -isystem $(REALTOP)/bionic/libm/include -isystem $(shell dirname $(KERNEL_TOOLS_PREFIX))/../include -I$(KERNEL_OUT)/tools/perf" BASIC_LDFLAGS="-nostdlib -Wl,-dynamic-linker,/system/bin/linker,-z,muldefs,-T$(REALTOP)/$(BUILD_SYSTEM)/armelf.x,-z,nocopyreloc,--no-undefined -L$(REALTOP)/$(TARGET_OUT_STATIC_LIBRARIES) -L$(REALTOP)/$(PRODUCT_OUT)/system/lib -L$(REALTOP)/external/elfutils -L$(realpath $(PRODUCT_OUT))/obj/STATIC_LIBRARIES/libelf_intermediates -lpthread -lelf -lm -lc $(REALTOP)/$(TARGET_CRTBEGIN_DYNAMIC_O) $(REALTOP)/$(TARGET_CRTEND_O)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT)/tools/perf/ OUTPUT=$(KERNEL_OUT)/tools/perf/ ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD prefix=/system NO_DWARF=1 NO_NEWT=1 NO_LIBPERL=1 NO_LIBPYTHON=1 NO_GTK2=1 NO_STRLCPY=1 WERROR=0 && \
+	cp -f $(KERNEL_OUT)/tools/perf/perf $(REALTOP)/$(PRODUCT_OUT)/system/bin/
+endif
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/kernel &&\
