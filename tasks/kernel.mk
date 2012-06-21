@@ -20,7 +20,7 @@ KERNEL_OUT=$(shell readlink -f $(PRODUCT_OUT)/obj/kernel)
 # Android compatibility patch in
 ifneq ($(wildcard $(TOP)/kernel/tools/perf/compat-android.h),)
 	INCLUDE_PERF := 1
-	PERF_DEP := out/target/product/pandaboard/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a
+	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a
 endif
 
 android_kernel: $(PRODUCT_OUT)/u-boot.bin $(PERF_DEP)
