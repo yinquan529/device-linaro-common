@@ -23,13 +23,21 @@ ifneq ($(wildcard $(TOP)/kernel/tools/perf/compat-android.h),)
 	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a
 endif
 
-android_kernel: $(PRODUCT_OUT)/u-boot.bin $(PERF_DEP)
+ifeq ($(TARGET_BOOTLOADER_TYPE),fastboot)
+BOOTLOADER_DEP :=
+KERNEL_TARGET := vmlinux
+else
+BOOTLOADER_DEP := $(PRODUCT_OUT)/u-boot.bin
+KERNEL_TARGET := uImage
+endif
+
+android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	mkdir -p $(KERNEL_OUT)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
 	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
-	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD uImage
+	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD $(KERNEL_TARGET) 
 ifeq ($(INCLUDE_PERF),1)
 	cd $(TOP)/kernel/tools/perf &&\
 	mkdir -p $(KERNEL_OUT)/tools/perf &&\
