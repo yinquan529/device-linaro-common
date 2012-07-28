@@ -23,7 +23,7 @@ ifneq ($(wildcard $(TOP)/kernel/tools/perf/compat-android.h),)
 	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a
 endif
 
-ifeq ($(TARGET_BOOTLOADER_TYPE),fastboot)
+ifeq ($(strip $(TARGET_BOOTLOADER_TYPE)),fastboot)
 BOOTLOADER_DEP :=
 KERNEL_TARGET := vmlinux
 else
@@ -32,6 +32,7 @@ KERNEL_TARGET := uImage
 endif
 
 android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
+	echo building kernel $(KERNEL_TARGET) with config $(KERNEL_CONFIG) for bootloader $(TARGET_BOOTLOADER_TYPE)
 	mkdir -p $(KERNEL_OUT)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
