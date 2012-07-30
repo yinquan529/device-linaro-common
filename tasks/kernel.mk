@@ -25,7 +25,7 @@ endif
 
 ifeq ($(strip $(TARGET_BOOTLOADER_TYPE)),fastboot)
 BOOTLOADER_DEP :=
-KERNEL_TARGET := vmlinux
+KERNEL_TARGET := zImage
 else
 BOOTLOADER_DEP := $(PRODUCT_OUT)/u-boot.bin
 KERNEL_TARGET := uImage
