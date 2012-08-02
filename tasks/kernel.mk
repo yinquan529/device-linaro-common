@@ -93,7 +93,7 @@ endif
 out_of_tree_modules: $(INSTALLED_KERNEL_TARGET) gator_driver
 
 $(INSTALLED_KERNEL_TARGET): android_kernel
-	ln -sf $(KERNEL_OUT)/arch/arm/boot/uImage $(INSTALLED_KERNEL_TARGET)
+	ln -sf $(KERNEL_OUT)/arch/arm/boot/$(KERNEL_TARGET) $(INSTALLED_KERNEL_TARGET)
 
 $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
 
