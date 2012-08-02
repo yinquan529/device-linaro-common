@@ -2,7 +2,7 @@ ifneq ($(strip $(SHOW_COMMANDS)),)
 KERNEL_VERBOSE="V=1"
 endif
 
-ifneq ($(findstring prebuilt,$(TARGET_TOOLS_PREFIX)),)
+ifneq ($(findstring prebuilt/,$(TARGET_TOOLS_PREFIX)),)
 # The prebuilt toolchain is way too old to compile
 # current kernels - so we use a system wide toolchain
 # installation if available.
