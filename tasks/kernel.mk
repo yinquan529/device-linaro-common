@@ -2,14 +2,7 @@ ifneq ($(strip $(SHOW_COMMANDS)),)
 KERNEL_VERBOSE="V=1"
 endif
 
-ifneq ($(findstring prebuilt/,$(TARGET_TOOLS_PREFIX)),)
-# The prebuilt toolchain is way too old to compile
-# current kernels - so we use a system wide toolchain
-# installation if available.
-KERNEL_TOOLS_PREFIX ?= $(shell which arm-linux-gnueabi-gcc |sed -e 's,gcc,,')
-else
 KERNEL_TOOLS_PREFIX ?= $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX))
-endif
 
 LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
 REALTOP=$(realpath $(TOP))
