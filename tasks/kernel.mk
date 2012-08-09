@@ -30,7 +30,10 @@ android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
-	$(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG) &&\
+	if [ $(words $(KERNEL_CONFIG)) -gt 1 ]; \
+	then scripts/kconfig/merge_config.sh -m $(KERNEL_CONFIG) && mv -f .config $(KERNEL_OUT)/.merged.config && $(MAKE) -j1 $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm KCONFIG_ALLCONFIG=$(KERNEL_OUT)/.merged.config alldefconfig; \
+	else $(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG); \
+	fi && \
 	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD $(KERNEL_TARGET) 
 ifeq ($(INCLUDE_PERF),1)
 	cd $(TOP)/kernel/tools/perf &&\
