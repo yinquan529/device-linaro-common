@@ -9,11 +9,13 @@ REALTOP=$(realpath $(TOP))
 
 KERNEL_OUT=$(shell readlink -f $(PRODUCT_OUT)/obj/kernel)
 
+ifneq ($(strip $(BUILD_TINY_ANDROID)),true)
 # We can build perf if it's included in the kernel and has the
 # Android compatibility patch in
 ifneq ($(wildcard $(TOP)/kernel/tools/perf/compat-android.h),)
 	INCLUDE_PERF := 1
 	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a
+endif
 endif
 
 ifeq ($(strip $(TARGET_BOOTLOADER_TYPE)),fastboot)
