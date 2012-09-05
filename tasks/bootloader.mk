@@ -181,6 +181,45 @@ endef
 
 
 #
+# Helpers for building RTSM boot-wrappers
+#
+
+ifneq ($(BOOTWRAPPER_TOOLS_PREFIX),)
+# Used supplied prefix
+BOOTWRAPPER_TCDIR = $(realpath $(shell dirname $(BOOTWRAPPER_TOOLS_PREFIX)))
+BOOTWRAPPER_TCPREFIX = $(shell basename $(BOOTWRAPPER_TOOLS_PREFIX))
+else
+ifneq ($(findstring prebuilt,$(TARGET_TOOLS_PREFIX)),)
+# The AOSP prebuilt toolchain is too old to compile
+# the boot-wrapper, so we fall back to a system compiler
+BOOTWRAPPER_TCDIR = $(shell basename `which arm-linux-gnueabi-gcc`)
+BOOTWRAPPER_TCPREFIX = arm-linux-gnueabi-
+else
+BOOTWRAPPER_TCDIR = $(realpath $(shell dirname $(TARGET_TOOLS_PREFIX)))
+# The boot-wrapper is not an Android application and should be
+# built with the bare metal toolchain if it is available
+BOOTWRAPPER_TCPREFIX = $(shell if [ -e $(BOOTWRAPPER_TCDIR)/arm-eabi-gcc ]; then echo arm-eabi-; else basename $(TARGET_TOOLS_PREFIX); fi)
+endif
+endif
+
+#
+# Invoke make with the toolchain setup for cross compilation, example usage:
+#
+#   cd $$(TOP)/boot-wrapper && $(MAKE_RTSM_BOOTWRAPPER) linux-system-semi.axf
+#
+# As Linaro's toolchain uses the gold linker and this doesn't work
+# correctly for the bootwrapper, this macro checks for the presence of
+# BFD LD and forces this into the PATH ahead of everything else, (this is
+# based on code in uboot.mk).
+#
+define MAKE_RTSM_BOOTWRAPPER
+	if [ -e $(BOOTWRAPPER_TCDIR)/$(BOOTWRAPPER_TCPREFIX)ld.bfd ]; then ln -sf $(BOOTWRAPPER_TCDIR)/$(BOOTWRAPPER_TCPREFIX)ld.bfd $(BOOTWRAPPER_TCPREFIX)ld; fi && \
+	export PATH=`pwd`:$(BOOTWRAPPER_TCDIR):$(PATH) && \
+	$(MAKE) CROSS_COMPILE=$(BOOTWRAPPER_TCPREFIX)
+endef
+
+
+#
 # Include custom makefiles
 #
 ifneq ($(CUSTOM_BOOTLOADER_MAKEFILE),)
