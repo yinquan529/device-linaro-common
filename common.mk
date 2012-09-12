@@ -53,7 +53,9 @@ PRODUCT_PACKAGES := \
     stressapptest \
     DisableSuspend \
     libncurses \
-    htop
+    htop \
+    cyclictest \
+    sysbench
 
 #packages we are using for benchmarking
 PRODUCT_PACKAGES += \
