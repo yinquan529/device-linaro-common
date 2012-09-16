@@ -1,5 +1,7 @@
 Instructions for https://android-build.linaro.org/builds/~linaro-android/vexpress-rtsm-jb-gcc47-armlt-stable-open/
 
+These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
+
 = Get artifacts =
 
   Scroll down to the 'Downloads' section

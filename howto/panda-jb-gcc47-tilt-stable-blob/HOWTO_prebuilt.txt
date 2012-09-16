@@ -2,6 +2,8 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android/panda-j
 
 Last validated with build 59 and linaro-android-media-create rev 561.
 
+These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
+
 = Get artifacts =
 
   Scroll down to the 'Downloads' section
