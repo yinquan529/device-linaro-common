@@ -1,0 +1,56 @@
+Instructions for https://android-build.linaro.org/builds/~linaro-android/vexpress-rtsm-jb-gcc47-armlt-stable-open/
+
+= Get artifacts =
+
+  Scroll down to the 'Downloads' section
+
+  Click on each link to download:
+    target/product/vexpress_rtsm/boot.tar.bz2
+    target/product/vexpress_rtsm/system.tar.bz2
+    target/product/vexpress_rtsm/userdata.tar.bz2
+
+= Get linaro image tools =
+
+  Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
+
+  $ sudo add-apt-repository ppa:linaro-maintainers/tools
+  $ sudo apt-get update
+  $ sudo apt-get install linaro-image-tools
+
+  If you're using a released build (with a -release or from releases.linaro.org), skip this step.
+  If you're using a "tip" build do not skip the step and do the following:
+
+  $ sudo apt-get install bzr
+  $ bzr branch lp:linaro-image-tools
+
+= Create media =
+
+  Run linaro image tools
+
+  $ linaro-android-media-create --image-file mmc.bin --image-size 2000M --dev vexpress --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+  Untar boot tarball
+
+  $ tar -jxvf boot.tar.bz2
+
+  To Run on big.LITTLE
+
+  $(PATH_TO_RTSM)/bin/RTSM_VE_Cortex-A15x4-A7x4 -a coretile.cluster0.*=boot/img.axf -C motherboard.mmc.p_mmc_file=mmc.bin  -C coretile.cache_state_modelled=0
+
+  To Run on big.LITTLE with semi-hosting
+
+  $(PATH_TO_RTSM)/bin/RTSM_VE_Cortex-A15x4-A7x4 -a coretile.cluster0.*=./boot/img.axf -C motherboard.mmc.p_mmc_file=mmc.bin -C coretile.cache_state_modelled=0  -C coretile.cluster0.cpu0.semihosting-enable=1 -C coretile.cluster0.cpu0.semihosting-cmd_line='--kernel ./boot/zImagewithDT --initrd ./boot/Initrd -- console=ttyAMA mem=512M mem=512M@0x880000000 androidboot.console=ttyAMA0 earlyprintk init=/init'
+
+  To Run on A15 Simulator with semi-hosting
+
+  $(PATH_TO_RTSM)/bin/RTSM_VE_Cortex-A15x4 boot/linux-system-semi-A15.axf -C motherboard.mmc.p_mmc_file=./mmc.bin -C cluster.cpu0.semihosting-cmd_line="--kernel ./boot/uImagewithDT --initrd ./boot/Initrd --console=ttyAMA mem=512M mem=512M@0x880000000 earlyprintk init=/init"
+
+  To Run on A15 Simulator without semi-hosting
+
+  $(PATH_TO_RTSM)/bin/RTSM_VE_Cortex-A15x4 boot/linux-system-A15.axf -C motherboard.mmc.p_mmc_file=./mmc.bin
+
+= Check console output =
+
+  For FastModels, serial output is available over console
+
+  $ telnet 127.0.0.1 -debug 5000 -e ^z

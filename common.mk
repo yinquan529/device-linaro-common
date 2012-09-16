@@ -68,6 +68,13 @@ V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
 PRODUCT_COPY_FILES := \
 	device/linaro/common/wallpaper_info.xml:data/system/wallpaper_info.xml \
 	device/linaro/common/disablesuspend.sh:system/bin/disablesuspend.sh \
-	$(V8BENCHMARKS)
+	$(V8BENCHMARKS) \
+	device/linaro/common/howto/panda-jb-gcc47-tilt-stable-blob/HOWTO_prebuilt.txt:howto/panda-jb-gcc47-tilt-stable-blob/HOWTO_prebuilt.txt \
+	device/linaro/common/howto/vexpress-rtsm-jb-gcc47-armlt-stable-open/HOWTO_prebuilt.txt:howto/vexpress-rtsm-jb-gcc47-armlt-stable-open/HOWTO_prebuilt.txt \
+	device/linaro/common/howto/panda-jb-gcc47-tilt-tracking-blob/HOWTO_prebuilt.txt:howto/panda-jb-gcc47-tilt-tracking-blob/HOWTO_prebuilt.txt \
+	device/linaro/common/howto/origen-jb-gcc47-samsunglt-stable-blob/HOWTO_prebuilt.txt:howto/origen-jb-gcc47-samsunglt-stable-blob/HOWTO_prebuilt.txt \
+	device/linaro/common/howto/snowball-jb-gcc47-igloo-stable-blob/HOWTO_prebuilt.txt:howto/snowball-jb-gcc47-igloo-stable-blob/HOWTO_prebuilt.txt \
+	device/linaro/common/howto/vexpress-jb-gcc47-armlt-tracking-open/HOWTO_prebuilt.txt:howto/vexpress-jb-gcc47-armlt-tracking-open/HOWTO_prebuilt.txt \
+	device/linaro/common/howto/galaxynexus-jb-gcc47-aosp-blob/HOWTO_prebuilt.txt:howto/galaxynexus-jb-gcc47-aosp-blob/HOWTO_prebuilt.txt
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
