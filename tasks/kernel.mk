@@ -107,12 +107,12 @@ $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
 #
 define MAKE_DEVICE_TREE
 
-$(1): $$(INSTALLED_KERNEL_TARGET) $$(ACP)
-	cd $$(TOP)/kernel && \
-	export PATH=../$$(BUILD_OUT_EXECUTABLES):$$(PATH) && \
-	$$(MAKE) O=$$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$$(KERNEL_TOOLS_PREFIX) $2.dtb
+$(1): $$(KERNEL_OUT)/arch/arm/boot/$(2).dtb $$(ACP)
 	@mkdir -p $$(dir $$@)
-	$$(ACP) -fpt $$(KERNEL_OUT)/arch/arm/boot/$2.dtb $$@
+	$$(ACP) -fpt $$< $$@
+
+DTB_TARGETS += $(2).dtb
+DTB_INSTALL_TARGETS += $(1)
 
 endef
 
@@ -120,17 +120,31 @@ endef
 # DEVICE_TREES contains a list of device-trees to build, each
 # entry in the list is in the form <source-name>:<blob-name>
 #
-DEVICE_TREE_TARGETS :=
+DTB_TARGETS :=
+DTB_INSTALL_TARGETS :=
 $(foreach _ub,$(DEVICE_TREES),                             \
     $(eval _source := $(call word-colon,1,$(_ub)))         \
     $(eval _blob := $(call word-colon,2,$(_ub)))           \
     $(eval _target := $(PRODUCT_OUT)/boot/$(_blob))        \
     $(eval $(call MAKE_DEVICE_TREE,$(_target),$(_source))) \
-    $(eval DEVICE_TREE_TARGETS += $(_target))              \
     )
 
-$(INSTALLED_BOOTTARBALL_TARGET): $(DEVICE_TREE_TARGETS)
+
+ifneq ($(strip $(DTB_TARGETS)),)
+
+.PHONY : all_dtbs
+all_dtbs : $(INSTALLED_KERNEL_TARGET)
+	cd $(TOP)/kernel && \
+	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
+	$(MAKE) O=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) $(DTB_TARGETS)
+
+$(patsubst %,$(KERNEL_OUT)/arch/arm/boot/%,$(DTB_TARGETS)) : all_dtbs
+
+endif
+
+
+$(INSTALLED_BOOTTARBALL_TARGET): $(DTB_INSTALL_TARGETS)
 
 ifeq ($(TARGET_PRODUCT), vexpress_rtsm)
-bootwrapper: $(DEVICE_TREE_TARGETS)
+bootwrapper: $(DTB_INSTALL_TARGETS)
 endif
