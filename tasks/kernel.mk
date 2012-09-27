@@ -7,7 +7,7 @@ KERNEL_TOOLS_PREFIX ?= $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREF
 LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
 REALTOP=$(realpath $(TOP))
 
-KERNEL_OUT=$(shell readlink -f $(PRODUCT_OUT)/obj/kernel)
+KERNEL_OUT=$(realpath $(PRODUCT_OUT))/obj/kernel
 
 ifneq ($(strip $(BUILD_TINY_ANDROID)),true)
 # We can build perf if it's included in the kernel and has the
