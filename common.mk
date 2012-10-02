@@ -68,13 +68,22 @@ V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
 PRODUCT_COPY_FILES := \
 	device/linaro/common/wallpaper_info.xml:data/system/wallpaper_info.xml \
 	device/linaro/common/disablesuspend.sh:system/bin/disablesuspend.sh \
-	$(V8BENCHMARKS) \
-	device/linaro/common/howto/panda-jb-gcc47-tilt-stable-blob/HOWTO_prebuilt.txt:howto/panda-jb-gcc47-tilt-stable-blob/HOWTO_prebuilt.txt \
-	device/linaro/common/howto/vexpress-rtsm-jb-gcc47-armlt-stable-open/HOWTO_prebuilt.txt:howto/vexpress-rtsm-jb-gcc47-armlt-stable-open/HOWTO_prebuilt.txt \
-	device/linaro/common/howto/panda-jb-gcc47-tilt-tracking-blob/HOWTO_prebuilt.txt:howto/panda-jb-gcc47-tilt-tracking-blob/HOWTO_prebuilt.txt \
-	device/linaro/common/howto/origen-jb-gcc47-samsunglt-stable-blob/HOWTO_prebuilt.txt:howto/origen-jb-gcc47-samsunglt-stable-blob/HOWTO_prebuilt.txt \
-	device/linaro/common/howto/snowball-jb-gcc47-igloo-stable-blob/HOWTO_prebuilt.txt:howto/snowball-jb-gcc47-igloo-stable-blob/HOWTO_prebuilt.txt \
-	device/linaro/common/howto/vexpress-jb-gcc47-armlt-tracking-open/HOWTO_prebuilt.txt:howto/vexpress-jb-gcc47-armlt-tracking-open/HOWTO_prebuilt.txt \
-	device/linaro/common/howto/galaxynexus-jb-gcc47-aosp-blob/HOWTO_prebuilt.txt:howto/galaxynexus-jb-gcc47-aosp-blob/HOWTO_prebuilt.txt
+	$(V8BENCHMARKS)
+
+# Since Make doesn't do && expressions without a system call hack
+# which isn't portible, use a var to record if the var exists and the
+# directory exists
+NO_LINARO_BUILD_SPEC := true
+ifneq ($(strip $(LINARO_BUILD_SPEC)),)
+ifneq ($(wildcard $(TOP)/device/linaro/common/howto/$(LINARO_BUILD_SPEC)),)
+PRODUCT_COPY_FILES += \
+	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/HOWTO_prebuilt.txt:howto/HOWTO_prebuilt.txt$(warning here)
+NO_LINARO_BUILD_SPEC := false
+endif
+endif
+ifeq ($(NO_LINARO_BUILD_SPEC),true)
+PRODUCT_COPY_FILES += \
+	device/linaro/common/howto/default/HOWTO_prebuilt.txt:howto/HOWTO_prebuilt.txt$(warning here2)
+endif
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
