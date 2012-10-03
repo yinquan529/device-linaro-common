@@ -1,0 +1,86 @@
+Instructions for https://android-build.linaro.org/builds/~berolinux/nexus7-jb-gcc47-aosp-blob/
+
+These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
+
+= Get artifacts =
+
+  (You don't need the artifacts if you wish to build from source)
+
+  Scroll down to the 'Downloads' section
+
+  Click on each link to download:
+    target/product/grouper/boot.img
+    target/product/grouper/system.img
+    target/product/grouper/userdata.img
+
+= Get and build source =
+
+  (You don't need the source if you wish to install from the binaries)
+
+  $ mkdir linaro-nexus7
+  $ cd linaro-nexus7
+  $ repo init -u git://android.git.linaro.org/ -b linaro-playground -m staging-nexus7.git
+  $ repo sync
+  $ make TARGET_PRODUCT=full_grouper TARGET_TOOLS_PREFIX=/path/to/your/linaro/android/toolchain/bin/arm-linux-androideabi- droidcore -j4
+
+= Get merge-nexus7-blobs script =
+
+  The script is available from:
+
+  http://android.git.linaro.org/gitweb?p=device/asus/grouper.git;a=blob_plain;f=merge-nexus7-blobs;hb=linaro-playground
+
+  or from git:
+
+  $ git clone git://android.git.linaro.org/device/asus/grouper.git
+  $ cd grouper
+  $ git checkout -b linaro-playground origin/linaro-playground
+
+  Make sure your computer is connected to the Internet, since
+  the script downloads non-free binaries and tools to extract images.
+
+  Run merge-nexus7-blobs script, giving the directory containing the .img files
+  as its sole argument.
+
+  The script will do the remaining bits for you, including flashing the tablet.
+
+  WARNING: There is no guarantee whatsoever that the build will work.
+           If it breaks your tablet, you get to keep both pieces.
+
+= Install Google Apps =
+
+If you wish to use the device as a real tablet rather than a pure development
+device, chances are that you want to install the Google Apps on it:
+
+  * Install the Linaro Android build as described above
+
+  * Grab the current Google Apps zip for JellyBean from http://goo.im/gapps
+    At the time of the writing, the current version is:
+    http://goo.im/gapps/gapps-jb-20120726-signed.zip
+
+  * If you downloaded from a device other than your Nexus 7, transfer
+    the file to your Nexus 7 using:
+
+    mtp-sendfile gapps-jb*.zip 8
+
+  * Turn your Nexus 7 off completely
+
+  * Hold down the Volume Up and Volume Down buttons at the same time, and turn
+    on the device
+
+  * Use the Volume Up button to select "Recovery mode", then press the power
+    button to launch it. Wait for recovery to come up.
+
+  * Select "install zip from sdcard"
+
+  * Select "choose zip from sdcard"
+
+  * Choose the gapps-jb zip file you downloaded earlier (it should be in the
+    Download/ folder)
+
+  * Select "Yes - Install gapps-jb-*-signed.zip"
+
+  * Select "+++++Go Back+++++"
+
+  * Select "reboot system now"
+
+  * Enjoy your Google Apps enabled Linaro Android build!

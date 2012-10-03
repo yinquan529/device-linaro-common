@@ -1,0 +1,135 @@
+Instructions for https://android-build.linaro.org/builds/~linaro-android_snowball-jb-gcc47-linaro-tracking-open/
+
+These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
+
+This build is just a TINY Android. It will only boot to a prompt. (No GUI)
+
+= Get artifacts =
+
+  Scroll down to the 'Downloads' section
+
+  Click on each link to download:
+    target/product/snowball/boot.tar.bz2
+    target/product/snowball/system.tar.bz2
+    target/product/snowball/userdata.tar.bz2
+
+= Get linaro image tools =
+
+  This build requires at least version 12.09 of linaro-image-tools to work correctly.
+
+  Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools.
+
+  $ sudo add-apt-repository ppa:linaro-maintainers/tools
+  $ sudo apt-get update
+  $ sudo apt-get install linaro-image-tools
+
+  If you're using a released build (with a -release or from releases.linaro.org), skip this step.
+  If you're using a "tip" build do not skip the step and do the following:
+
+  $ sudo apt-get install bzr
+  $ bzr branch lp:linaro-image-tools
+
+= Create media (SD card) =
+
+  Disable automount (instructions provided for Gnome)
+
+  $ TMP1=$(dconf read /org/gnome/desktop/media-handling/automount)
+  $ TMP2=$(dconf read /org/gnome/desktop/media-handling/automount-open)
+  $ dconf write /org/gnome/desktop/media-handling/automount false
+  $ dconf write /org/gnome/desktop/media-handling/automount-open false
+
+  Insert an SD card
+
+  Run 'dmesg'
+
+  $ dmesg
+
+  Look for a line that looks like the following at the end of the log
+
+  [288582.790722]  sdc: sdc1 sdc2 sdc3 sdc4 < sdc5 sdc6 >
+
+  WARNING: In the next step, make sure you use /dev/"whatever you see above".
+           You can erase your hard drive with the wrong parameter.
+
+  Run linaro image tools
+
+  $ linaro-android-media-create --mmc /dev/sdc --dev snowball_sd --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+  If you're using tip of linaro image tools
+
+  $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev snowball_sd --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+  Restore automount
+
+  $ dconf write /org/gnome/desktop/media-handling/automount $TMP1
+  $ dconf write /org/gnome/desktop/media-handling/automount-open $TMP2
+
+  As long as we are waiting for https://bugs.launchpad.net/linaro-image-tools/+bug/1055644 to be solve we need to do a small work around and replace the
+  boot.scr file on the SD card.
+
+  Remove the SD card and insert it again.
+
+  Fetch mpoirier's boot.scr file
+
+  $ wget http://people.canonical.com/~mpoirier/android/linaro-tracking-open/boot.scr
+  $ cp boot.src /media/boot/.
+  $ umount /media/*
+
+  Remove the SD card from the device writer and plug it into the board.
+
+= Update U-Boot =
+
+  U-Boot must pass the device tree to the kernel to boot. This code was not enabled before the end of September 2012. If the U-Boot in your Snowballs EMMC is
+  older you must update it to be able to boot the snowball with this build.
+
+  The instructions below will take the same tarballs that was use for preparing the SD card and create an image that will be written to the EMMC of the Snowball.
+  It is not possible to boot from the EMMC in this case. We just write an image to get U-Boot updated.
+
+   Download startupfiles from
+   http://www.igloocommunity.org/download/linaro/startupfiles/latest
+
+   $ tar -xvf startupfiles_3.0.8-0.tar.gz
+   $ linaro-android-media-create --image-file snowball.img --image-size 1500M --dev snowball_emmc --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+   $ sudo add-apt-repository ppa:igloocommunity-maintainers/snowball-tools
+   $ sudo apt-get update
+   $ sudo apt-get install riff
+
+   (OPTIONAL) Remove the PPA
+
+   $ sudo add-apt-repository --remove ppa:igloocommunity-maintainers/snowball-tools
+
+   Turn off the board
+
+   $ sudo riff -f snowball.img
+
+   Connect your board using the OTG USB port (next to power supply port) to
+   your PC
+   Turn on the board
+   Riff will detect the board and start the execution
+   When execution is finalized riff will exit
+
+= Check console output =
+
+  Plug in an USB-to-serial converter and run minicom
+
+  $ minicom -D /dev/ttyUSB0 -w -C minicom.txt
+
+= Notes =
+
+ * Note 1 - ADB only works over IP
+
+   In the console type:
+     stop adbd
+     setprop service.adb.tcp.port 6565
+     start adbd
+     ifconfig eth0 # to get boardsIP
+
+   On the host type:
+     adb connect boardsIP:6565
+
+ * Note 2 - Using a DVI monitor
+
+   If you are using a HDMI to DVI converter or cable then you should wait for about 10 seconds when booting
+   and when you see "av8100_hdmi av8100_hdmi.3: Framebuffer created (av8100_hdmi)" in the log press enter
+   and type "echo 2 > /sys/devices/av8100_hdmi.3/hdmisdtvswitch".
