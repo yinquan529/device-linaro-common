@@ -1,7 +1,5 @@
 Instructions for https://android-build.linaro.org/builds/~linaro-android/panda-master-gcc44-aosp-stable-blob/
 
-These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
-
 = Get artifacts =
 
   Scroll down to the 'Downloads' section
@@ -53,7 +51,7 @@ These instructios are meant to be published at android-build.linaro.org. 'Downlo
 
   If you're using tip of linaro image tools
 
-  $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev origen --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+  $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev panda --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
 
   Install graphics libraries
 

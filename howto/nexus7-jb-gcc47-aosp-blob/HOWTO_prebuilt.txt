@@ -1,7 +1,5 @@
 Instructions for https://android-build.linaro.org/builds/~berolinux/nexus7-jb-gcc47-aosp-blob/
 
-These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
-
 = Get artifacts =
 
   (You don't need the artifacts if you wish to build from source)

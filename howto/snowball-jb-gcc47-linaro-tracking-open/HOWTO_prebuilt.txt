@@ -1,7 +1,5 @@
 Instructions for https://android-build.linaro.org/builds/~linaro-android_snowball-jb-gcc47-linaro-tracking-open/
 
-These instructios are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
-
 This build is just a TINY Android. It will only boot to a prompt. (No GUI)
 
 = Get artifacts =

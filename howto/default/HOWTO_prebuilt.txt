@@ -1,15 +1,13 @@
-Default instructions for using Linaro Android prebuilt builds
-
-These instructions are meant to be published at android-build.linaro.org. 'Downloads' and other instructions refer to this.
+Instructions for https://android-build.linaro.org/builds/~linaro-android/<BUILD_NAME>/
 
 = Get artifacts =
 
   Scroll down to the 'Downloads' section
 
   Click on each link to download:
-    target/product/<target>/boot.tar.bz2
-    target/product/<target>/system.tar.bz2
-    target/product/<target>/userdata.tar.bz2
+    target/product/<TARGET>/boot.tar.bz2
+    target/product/<TARGET>/system.tar.bz2
+    target/product/<TARGET>/userdata.tar.bz2
 
 = Get linaro image tools =
 
@@ -49,13 +47,13 @@ These instructions are meant to be published at android-build.linaro.org. 'Downl
 
   Run linaro image tools
 
-  $ linaro-android-media-create --mmc /dev/sdc --dev <board> --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+  $ linaro-android-media-create --mmc /dev/sdc --dev <BOARD> --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
 
   If you're using tip of linaro image tools
 
-  $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev <board> --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+  $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev <BOARD> --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
 
-  To find <board> run linaro-android-media-create with a -h and read the help.
+  To find <BOARD> run linaro-android-media-create with a -h and read the help.
 
   Restore automount
 
