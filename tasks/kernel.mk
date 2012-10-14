@@ -95,6 +95,7 @@ $(INSTALLED_KERNEL_TARGET): android_kernel
 
 $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
 
+droidcore: android_kernel_modules out_of_tree_modules
 
 #
 # Generate a rule to build a device-tree.
