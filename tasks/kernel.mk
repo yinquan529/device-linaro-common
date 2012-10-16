@@ -39,7 +39,7 @@ endif
 
 android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 ifeq ($(strip $(ANDROID_64)),true)
-	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$PATH
+	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$(PATH)
 endif
 	echo building kernel $(KERNEL_TARGET) with config $(KERNEL_CONFIG) for bootloader $(TARGET_BOOTLOADER_TYPE)
 	mkdir -p $(KERNEL_OUT)
@@ -62,7 +62,7 @@ endif
 
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 ifeq ($(strip $(ANDROID_64)),true)
-	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$PATH
+	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$(PATH)
 endif
 	cd $(TOP)/kernel &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
@@ -92,7 +92,7 @@ endif
 ifneq ($(realpath $(TOP)/external/gator/driver),)
 gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 ifeq ($(strip $(ANDROID_64)),true)
-	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$PATH
+	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$(PATH)
 endif
 	cd $(TOP)/external/gator/driver &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
@@ -156,7 +156,7 @@ ifneq ($(strip $(DTB_TARGETS)),)
 .PHONY : all_dtbs
 all_dtbs : $(INSTALLED_KERNEL_TARGET)
 ifeq ($(strip $(ANDROID_64)),true)
-	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$PATH
+	export PATH=$(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:$(PATH)
 endif
 	cd $(TOP)/kernel && \
 	export PATH=../$(BUILD_OUT_EXECUTABLES):$(PATH) && \
