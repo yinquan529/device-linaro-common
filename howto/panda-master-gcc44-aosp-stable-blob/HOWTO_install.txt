@@ -69,7 +69,7 @@ Install graphics libraries
 
 Restore automount
 
-<pre>  
+<pre>
   $ dconf write /org/gnome/desktop/media-handling/automount $TMP1
   $ dconf write /org/gnome/desktop/media-handling/automount-open $TMP2
 </pre>

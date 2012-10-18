@@ -12,7 +12,7 @@ Click on each link to download:
 h2. Get linaro image tools
 
 Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
-  
+
 <pre>
   $ sudo add-apt-repository ppa:linaro-maintainers/tools
   $ sudo apt-get update
