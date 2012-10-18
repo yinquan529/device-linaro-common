@@ -77,13 +77,13 @@ NO_LINARO_BUILD_SPEC := true
 ifneq ($(strip $(LINARO_BUILD_SPEC)),)
 ifneq ($(wildcard $(TOP)/device/linaro/common/howto/$(LINARO_BUILD_SPEC)),)
 PRODUCT_COPY_FILES += \
-	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/HOWTO_prebuilt.txt:howto/HOWTO_prebuilt.txt$(warning here)
+	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/HOWTO_install.txt:howto/HOWTO_install.txt$(warning here)
 NO_LINARO_BUILD_SPEC := false
 endif
 endif
 ifeq ($(NO_LINARO_BUILD_SPEC),true)
 PRODUCT_COPY_FILES += \
-	device/linaro/common/howto/default/HOWTO_prebuilt.txt:howto/HOWTO_prebuilt.txt$(warning here2)
+	device/linaro/common/howto/default/HOWTO_install.txt:howto/HOWTO_install.txt$(warning here2)
 endif
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
