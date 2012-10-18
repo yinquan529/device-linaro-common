@@ -70,20 +70,25 @@ PRODUCT_COPY_FILES := \
 	device/linaro/common/disablesuspend.sh:system/bin/disablesuspend.sh \
 	$(V8BENCHMARKS)
 
-# Since Make doesn't do && expressions without a system call hack
-# which isn't portible, use a var to record if the var exists and the
-# directory exists
-NO_LINARO_BUILD_SPEC := true
-ifneq ($(strip $(LINARO_BUILD_SPEC)),)
-ifneq ($(wildcard $(TOP)/device/linaro/common/howto/$(LINARO_BUILD_SPEC)),)
+define copy-howto
+ifneq ($(wildcard $(TOP)/device/linaro/common/howto/$(LINARO_BUILD_SPEC)/$1),)
 PRODUCT_COPY_FILES += \
-	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/HOWTO_install.txt:howto/HOWTO_install.txt$(warning here)
-NO_LINARO_BUILD_SPEC := false
-endif
-endif
-ifeq ($(NO_LINARO_BUILD_SPEC),true)
+	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/$1:howto/$1
+else
+ifneq ($(wildcard $(TOP)/device/linaro/common/howto/default/$1),)
 PRODUCT_COPY_FILES += \
-	device/linaro/common/howto/default/HOWTO_install.txt:howto/HOWTO_install.txt$(warning here2)
+	device/linaro/common/howto/default/$1:howto/$1
 endif
+endif
+endef
+
+HOWTOS := \
+	HOWTO_install.txt \
+	HOWTO_getsourceandbuild.txt \
+	HOWTO_flashfirmware.txt \
+	HOWTO_releasenotes.txt \
+	HOWTO_rtsm.txt
+
+$(foreach howto,$(HOWTOS),$(eval $(call copy-howto,$(howto))))
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
