@@ -1,0 +1,83 @@
+Instructions for "https://android-build.linaro.org/builds/~linaro-android/panda-master-gcc44-aosp-stable-blob/":https://android-build.linaro.org/builds/~linaro-android/panda-master-gcc44-aosp-stable-blob/
+
+h2. Get artifacts
+
+Scroll down to the 'Downloads' section
+
+Click on each link to download:
+* target/product/panda/boot.tar.bz2
+* target/product/panda/system.tar.bz2
+* target/product/panda/userdata.tar.bz2
+
+h2. Get linaro image tools
+
+Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
+
+<pre>
+  $ sudo add-apt-repository ppa:linaro-maintainers/tools
+  $ sudo apt-get update
+  $ sudo apt-get install linaro-image-tools
+</pre>
+
+If you're using a released build (with a -release or from releases.linaro.org), skip this step.
+If you're using a "tip" build do not skip the step and do the following:
+
+<pre>
+  $ sudo apt-get install bzr
+  $ bzr branch lp:linaro-image-tools
+</pre>
+
+h2. Create media (SD card)
+
+Disable automount (instructions provided for Gnome)
+
+<pre>
+  $ TMP1=$(dconf read /org/gnome/desktop/media-handling/automount)
+  $ TMP2=$(dconf read /org/gnome/desktop/media-handling/automount-open)
+  $ dconf write /org/gnome/desktop/media-handling/automount false
+  $ dconf write /org/gnome/desktop/media-handling/automount-open false
+</pre>
+
+Insert an SD card
+
+Run 'dmesg'
+
+pre. $ dmesg
+
+Look for a line that looks like the following at the end of the log
+
+pre. [288582.790722]  sdc: sdc1 sdc2 sdc3 sdc4 < sdc5 sdc6 >
+
+*WARNING* In the next step, make sure you use /dev/"whatever you see above".
+You can erase your hard drive with the wrong parameter.
+
+Run linaro image tools
+
+pre. $ linaro-android-media-create --mmc /dev/sdc --dev panda --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+If you're using tip of linaro image tools
+
+pre. $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev panda --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+Install graphics libraries
+
+<pre>
+  $ wget http://people.linaro.org/~vishalbhoj/install-binaries-4.0.4.sh
+  $ chmod a+x install-binaries-4.0.4.sh
+  $ ./install-binaries-4.0.4.sh
+</pre>
+
+Restore automount
+
+<pre>  
+  $ dconf write /org/gnome/desktop/media-handling/automount $TMP1
+  $ dconf write /org/gnome/desktop/media-handling/automount-open $TMP2
+</pre>
+
+Remove the SD card from the device writer and plug it into the board.
+
+h2. Check console output
+
+Plug in an USB-to-serial converter and run minicom
+
+pre. $ minicom -D /dev/ttyUSB0 -w -C minicom.txt
