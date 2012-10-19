@@ -83,6 +83,7 @@ endif
 endef
 
 HOWTOS := \
+	OPEN-EULA.txt \
 	HOWTO_install.txt \
 	HOWTO_getsourceandbuild.txt \
 	HOWTO_flashfirmware.txt \
