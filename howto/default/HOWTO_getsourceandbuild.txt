@@ -61,7 +61,7 @@ pre. $ linaro-android-media-create --mmc /dev/sdc --dev panda --boot out/target/
 
 If you're using tip of linaro image tools
 
-pre. $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev panda --boot out/target/product/<BOARD>/boot.tar.bz2 --system out/target/product/<BOARD>/system.tar.bz2 --userdata 
+pre. $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev panda --boot out/target/product/<BOARD>/boot.tar.bz2 --system out/target/product/<BOARD>/system.tar.bz2 --userdata
 out/target/product/<BOARD>/userdata.tar.bz2
 
 Restore automount
