@@ -1,10 +1,16 @@
 # stuff common to all Linaro LEB
 include $(LOCAL_PATH)/ZeroXBenchmark.mk
 
+ifneq ($(wildcard $(TOP)/packages/apps/AndroidTerm/Android.mk),)
+# Include AndroidTerm only if it's part of the manifest
+ANDROIDTERM := AndroidTerm libjackpal-androidterm4
+endif
+
 PRODUCT_PACKAGES := \
     AccountAndSyncSettings \
     AlarmClock \
     AlarmProvider \
+    $(ANDROIDTERM) \
     Bluetooth \
     Calculator \
     Calendar \
