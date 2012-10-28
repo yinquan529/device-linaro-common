@@ -5,6 +5,9 @@ ifneq ($(wildcard $(TOP)/packages/apps/AndroidTerm/Android.mk),)
 # Include AndroidTerm only if it's part of the manifest
 ANDROIDTERM := AndroidTerm libjackpal-androidterm4
 endif
+ifneq ($(wildcard $(TOP)/packages/inputmethods/hackerskeyboard/Android.mk),)
+HACKERSKEYBOARD := PCKeyboard
+endif
 
 PRODUCT_PACKAGES := \
     AccountAndSyncSettings \
@@ -23,6 +26,7 @@ PRODUCT_PACKAGES := \
     Launcher2 \
     Mms \
     Music \
+    $(HACKERSKEYBOARD) \
     Provision \
     Settings \
     SystemUI \
