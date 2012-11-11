@@ -100,6 +100,9 @@ HOWTOS := \
 	HOWTO_releasenotes.txt \
 	HOWTO_rtsm.txt
 
+PRODUCT_COPY_FILES += \
+        device/linaro/common/media_codecs.xml:system/etc/media_codecs.xml
+
 $(foreach howto,$(HOWTOS),$(eval $(call copy-howto,$(howto))))
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
