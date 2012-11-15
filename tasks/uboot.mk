@@ -59,7 +59,7 @@ ifeq ($(TARGET_PRODUCT), origen)
 endif
 endif
 
-ifeq ($(TARGET_PRODUCT), pandaboard)
+ifneq (,$(filter $(TARGET_PRODUCT),pandaboard panda5))
 ifeq ($(USE_PREBUILT_UBOOT), true)
 $(PRODUCT_OUT)/u-boot.bin:
 	ln -sf ../../../../device/linaro/pandaboard/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
