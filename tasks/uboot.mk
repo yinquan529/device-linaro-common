@@ -63,7 +63,7 @@ ifeq ($(TARGET_PRODUCT), origen_quad)
 ifeq ($(USE_PREBUILT_UBOOT), true)
 $(PRODUCT_OUT)/u-boot.bin:
 	mkdir -p $(PRODUCT_OUT)/boot
-	cp $(TOP)/device/linaro/origen_quad/bl1 $(PRODUCT_OUT)/boot/bl1
+	cp $(TOP)/device/linaro/origen_quad/bl1 $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 	cp $(TOP)/device/linaro/origen_quad/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
 endif
 endif
