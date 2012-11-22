@@ -1,9 +1,25 @@
-# Mount MMC partitions
+on init
+    # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
+    # Support legacy paths
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+
+
+on post-fs-data
+    mkdir /data/media 0770 media_rw media_rw
+
 on fs
-	# mmcblk0p1: /boot
-	mount ext4 /dev/block/mmcblk0p2 /system wait ro
-	chmod 0755 /system
-	mount ext4 /dev/block/mmcblk0p3 /cache wait
-	# mmcblk0p4: extended partition container
-	mount ext4 /dev/block/mmcblk0p5 /data wait
-	# mmcblk0p6: /sdcard
+    mount_all /fstab.partitions
+
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
+    class late_start
