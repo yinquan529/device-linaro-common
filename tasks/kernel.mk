@@ -59,7 +59,7 @@ ifeq ($(INCLUDE_PERF),1)
 	cp -f $(KERNEL_OUT)/tools/perf/perf $(REALTOP)/$(PRODUCT_OUT)/system/bin/
 endif
 ifeq ($(TARGET_PRODUCT), origen_quad)
-ifeq ($(USE_PREBUILT_UBOOT), true)
+ifeq ($(USE_EMMC_UBOOT), true)
 	cp -f $(KERNEL_OUT)/arch/arm/boot/zImage $(REALTOP)/$(PRODUCT_OUT)/boot/
 endif
 endif
