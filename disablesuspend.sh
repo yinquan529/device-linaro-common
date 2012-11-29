@@ -14,4 +14,4 @@
     sqlite3 /data/data/com.android.providers.settings/databases/settings.db "${screen_sleep}" # set sleep to none
     sqlite3 /data/data/com.android.providers.settings/databases/settings.db "${lockscreen}" ##set lock screen to none
     input keyevent 82  ##unlock the home screen
-    service call power 1 i32 26 ##acquireWakeLock FULL_WAKE_LOCK
+    svc power stayon true ##disable the suspend
