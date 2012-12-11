@@ -3,6 +3,14 @@
 BOOTLOADER_OUT = $(realpath $(PRODUCT_OUT))/boot
 BOOTLOADER_TARGETS :=
 
+# Set source path for u-boot
+# 1. use TARGET_UBOOT_SOURCE if defined
+# 2. try to use u-boot/<vendor>/<device> if it exists
+# 3. try to use u-boot (done in the android_uboot rule)
+TARGET_AUTO_UDIR := $(shell echo $(TARGET_DEVICE_DIR) | sed -e 's/^device/u-boot/g')
+TARGET_UBOOT_SOURCE ?= $(shell if [ -e $(TARGET_AUTO_UDIR) ]; then echo $(TARGET_AUTO_UDIR); else echo u-boot; fi;)
+UBOOT_SRC := $(TARGET_UBOOT_SOURCE)
+
 # Bootloaders have their own separate makefiles and we don't track the
 # dependencies these, therefore we need to remake them every time in case
 # files need updating. To facilitate this, bootloader rules will depend on
@@ -22,12 +30,13 @@ define MAKE_UBOOT
 
 $(1): $$(ACP) FORCE_BOOTLOADER_REMAKE
 	$$(eval _obj := $$(PRODUCT_OUT)/obj/u-boot.$(2))
+	$$(eval UBOOT_FOREST_ROOT:=$$(CURDIR))
 	@mkdir -p $$(_obj)
-	cd $$(TOP)/u-boot && \
+	cd $$(TOP)/$$(UBOOT_SRC) && \
 	if [ -e $$(UBOOT_TCDIR)/$$(UBOOT_TCPREFIX)ld.bfd ]; then ln -sf $$(UBOOT_TCDIR)/$$(UBOOT_TCPREFIX)ld.bfd $$(UBOOT_TCPREFIX)ld; fi && \
 	export PATH=`pwd`:$$(UBOOT_TCDIR):$$(PATH) && \
-	$$(MAKE) O=../$$(_obj) CROSS_COMPILE=$$(UBOOT_TCPREFIX) $(2)_config && \
-	$$(MAKE) O=../$$(_obj) CROSS_COMPILE=$$(UBOOT_TCPREFIX)
+	$$(MAKE) O=$$(UBOOT_FOREST_ROOT)/$$(_obj) CROSS_COMPILE=$$(UBOOT_TCPREFIX) $(2)_config && \
+	$$(MAKE) O=$$(UBOOT_FOREST_ROOT)/$$(_obj) CROSS_COMPILE=$$(UBOOT_TCPREFIX)
 	@mkdir -p $$(dir $$@)
 	$$(ACP) -fpt $$(_obj)/u-boot.bin $$@
 

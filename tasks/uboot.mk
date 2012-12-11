@@ -16,6 +16,13 @@ UBOOT_TCPREFIX = $(shell if [ -e $(UBOOT_TCDIR)/arm-eabi-gcc ]; then echo arm-ea
 endif
 endif
 
+# Set source path for u-boot
+# 1. use TARGET_UBOOT_SOURCE if defined
+# 2. try to use u-boot/<vendor>/<device> if it exists
+# 3. try to use u-boot (done in the android_uboot rule)
+TARGET_AUTO_UDIR := $(shell echo $(TARGET_DEVICE_DIR) | sed -e 's/^device/u-boot/g')
+TARGET_UBOOT_SOURCE ?= $(shell if [ -e $(TARGET_AUTO_UDIR) ]; then echo $(TARGET_AUTO_UDIR); else echo u-boot; fi;)
+UBOOT_SRC := $(TARGET_UBOOT_SOURCE)
 
 ifeq ($(USE_PREBUILT_UBOOT),)
 USE_PREBUILT_UBOOT=false
@@ -25,26 +32,27 @@ ifeq ($(USE_PREBUILT_UBOOT), false)
 # u-boot can't be built with gold - so we force BFD LD into the
 # PATH ahead of everything else
 android_uboot: $(ACP)
+	$(eval UBOOT_FOREST_ROOT:=$(CURDIR))
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
 ifeq ($(TARGET_PRODUCT), origen_quad)
 	if [ -e $(TOP)/vendor/insignal/origen_quad/exynos4x12/exynos4x12.bl1.bin ]; then \
 		mkdir -p $(TOP)/u-boot/firmware/origen_quad; \
-		cp $(TOP)/vendor/insignal/origen_quad/exynos4x12/exynos4x12.bl1.bin $(TOP)/u-boot/firmware/origen_quad/bl1.fw; \
+		cp $(TOP)/vendor/insignal/origen_quad/exynos4x12/exynos4x12.bl1.bin $(TOP)/$(UBOOT_SRC)/firmware/origen_quad/bl1.fw; \
 	fi
 endif
-	cd $(TOP)/u-boot &&\
+	cd $(UBOOT_SRC) &&\
 	if [ -e $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd ]; then ln -sf $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd $(UBOOT_TCPREFIX)ld; fi &&\
 	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
-	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) &&\
-	$(MAKE) O=../$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
+	$(MAKE) O=$(UBOOT_FOREST_ROOT)/$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) &&\
+	$(MAKE) O=$(UBOOT_FOREST_ROOT)/$(PRODUCT_OUT)/obj/u-boot CROSS_COMPILE=$(UBOOT_TCPREFIX)
 ifeq ($(TARGET_PRODUCT), iMX53)
-	cd $(TOP)/u-boot &&\
+	cd $(UBOOT_SRC) &&\
 	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
 endif
 ifeq ($(TARGET_PRODUCT), iMX6)
-	cd $(TOP)/u-boot &&\
+	cd $(UBOOT_SRC) &&\
 	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) $(UBOOT_CONFIG) && \
 	$(MAKE) CROSS_COMPILE=$(UBOOT_TCPREFIX) u-boot.imx
@@ -54,10 +62,10 @@ endif
 $(PRODUCT_OUT)/u-boot.bin: android_uboot
 	ln -sf obj/u-boot/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
 ifeq ($(TARGET_PRODUCT), iMX53)
-	cp $(TOP)/u-boot/u-boot.imx $(PRODUCT_OUT)/u-boot.imx
+	cp $(UBOOT_SRC)/u-boot.imx $(PRODUCT_OUT)/u-boot.imx
 endif
 ifeq ($(TARGET_PRODUCT), iMX6)
-	cp $(TOP)/u-boot/u-boot.imx $(PRODUCT_OUT)/u-boot.imx
+	cp $(UBOOT_SRC)/u-boot.imx $(PRODUCT_OUT)/u-boot.imx
 endif
 ifeq ($(TARGET_PRODUCT), origen)
 	mkdir -p $(PRODUCT_OUT)/boot
