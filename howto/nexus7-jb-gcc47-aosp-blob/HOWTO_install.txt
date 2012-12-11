@@ -7,9 +7,9 @@ h2. Get artifacts
 Scroll down to the 'Downloads' section
 
 Click on each link to download:
-* target/product/grouper/boot.img
-* target/product/grouper/system.img
-* target/product/grouper/userdata.img
+* boot.img
+* system.img
+* userdata.img
 
 h2. Get and build source
 

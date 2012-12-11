@@ -5,9 +5,9 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android/galaxyn
   Scroll down to the 'Downloads' section
 
   Click on each link to download:
-    target/product/maguro/boot.img
-    target/product/maguro/system.img
-    target/product/maguro/userdata.img
+    boot.img
+    system.img
+    userdata.img
 
 = Get merge-gnexus-blobs script =
 

@@ -7,9 +7,9 @@ Instructions for https://android-build.linaro.org/builds/~berolinux/nexus7-jb-gc
   Scroll down to the 'Downloads' section
 
   Click on each link to download:
-    target/product/grouper/boot.img
-    target/product/grouper/system.img
-    target/product/grouper/userdata.img
+    boot.img
+    system.img
+    userdata.img
 
 = Get and build source =
 

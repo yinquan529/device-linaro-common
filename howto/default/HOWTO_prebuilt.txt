@@ -5,9 +5,9 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android/<BUILD_
   Scroll down to the 'Downloads' section
 
   Click on each link to download:
-    target/product/<TARGET>/boot.tar.bz2
-    target/product/<TARGET>/system.tar.bz2
-    target/product/<TARGET>/userdata.tar.bz2
+    boot.tar.bz2
+    system.tar.bz2
+    userdata.tar.bz2
 
 = Get linaro image tools =
 

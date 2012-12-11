@@ -7,9 +7,9 @@ h2. Get artifacts
 Scroll down to the 'Downloads' section
 
 Click on each link to download:
-* target/product/snowball/boot.tar.bz2
-* target/product/snowball/system.tar.bz2
-* target/product/snowball/userdata.tar.bz2
+* boot.tar.bz2
+* system.tar.bz2
+* userdata.tar.bz2
 
 h2. Get linaro image tools
 
