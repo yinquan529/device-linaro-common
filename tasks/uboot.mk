@@ -26,6 +26,12 @@ ifeq ($(USE_PREBUILT_UBOOT), false)
 # PATH ahead of everything else
 android_uboot: $(ACP)
 	mkdir -p $(PRODUCT_OUT)/obj/u-boot
+ifeq ($(TARGET_PRODUCT), origen_quad)
+	if [ -e $(TOP)/vendor/insignal/origen_quad/exynos4x12/exynos4x12.bl1.bin ]; then \
+		mkdir -p $(TOP)/u-boot/firmware/origen_quad; \
+		cp $(TOP)/vendor/insignal/origen_quad/exynos4x12/exynos4x12.bl1.bin $(TOP)/u-boot/firmware/origen_quad/bl1.fw; \
+	fi
+endif
 	cd $(TOP)/u-boot &&\
 	if [ -e $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd ]; then ln -sf $(UBOOT_TCDIR)/$(UBOOT_TCPREFIX)ld.bfd $(UBOOT_TCPREFIX)ld; fi &&\
 	export PATH=`pwd`:$(UBOOT_TCDIR):$(PATH) && \
@@ -57,11 +63,9 @@ ifeq ($(TARGET_PRODUCT), origen)
 	mkdir -p $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/obj/u-boot/spl/origen-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 endif
-endif
-
 ifeq ($(TARGET_PRODUCT), origen_quad)
-ifeq ($(USE_PREBUILT_UBOOT), true)
-$(PRODUCT_OUT)/u-boot.bin:
+	mkdir -p $(PRODUCT_OUT)/boot
+	cp $(PRODUCT_OUT)/obj/u-boot/spl/origen_quad-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 endif
 endif
 
