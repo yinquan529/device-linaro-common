@@ -7,7 +7,7 @@ Scroll down to the 'Downloads' section
 Click on each link to download:
 * boot.tar.bz2
 * system.tar.bz2
-*  userdata.tar.bz2
+* userdata.tar.bz2
 
 h2. Get linaro image tools
 
