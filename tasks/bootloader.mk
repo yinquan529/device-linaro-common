@@ -74,11 +74,8 @@ else
 # metal toolchain if it is available...
 UEFI_TOOLS_DIR = $(realpath $(dir $(TARGET_TOOLS_PREFIX)))/
 UEFI_TOOLS_PREFIX = $(UEFI_TOOLS_DIR)$(shell if [ -e $(UEFI_TOOLS_DIR)arm-eabi-gcc ]; then echo arm-eabi-; else echo $(notdir $(TARGET_TOOLS_PREFIX)); fi)
-# Use GNU linker if exists, as gold doesn't work...
-UEFI_TOOLS_LD := $(shell if [ -e $(UEFI_TOOLS_PREFIX)ld.bfd ]; then echo ld.bfd; else echo ld; fi)
 endif
 endif
-UEFI_TOOLS_LD ?= ld
 
 
 EDK2_OUT_DIR = $(realpath $(PRODUCT_OUT))/obj/uefi
@@ -100,8 +97,6 @@ edk2_setup :
 	export WORKSPACE=$(EDK2_WORKSPACE) && \
 	export EDK_TOOLS_PATH=$(EDK2_BASETOOLS) && \
 	bash -c "$(EDK2_WORKSPACE)/edksetup.sh $(EDK2_WORKSPACE)"
-	sed -e "s/\(.*\)ENV(ARMLINUXGCC_TOOLS_PATH)arm-linux-gnueabi-ld\(.*\)/\1ENV(ARMLINUXGCC_TOOLS_PATH)arm-linux-gnueabi-$(UEFI_TOOLS_LD)\2/" -i $(EDK2_WORKSPACE)/Conf/tools_def.txt
-	sed -e "s/\(.*\)ENV(ARMLINUXGCC_TOOLS_PATH)arm-linux-gnueabi-\(.*\)/\1ENV(ARMLINUXGCC_TOOLS_PREFIX)\2/" -i $(EDK2_WORKSPACE)/Conf/tools_def.txt
 
 .PHONY : edk2_setup_clean
 edk2_setup_clean :
@@ -133,8 +128,12 @@ $(1) : $(2) edk2_tools FORCE_BOOTLOADER_REMAKE | $(EDK2_PREVIOUS_ROM)
 	cd $$(EDK2_WORKSPACE) && \
 	export WORKSPACE=$$(EDK2_WORKSPACE) && \
 	export EDK_TOOLS_PATH=$$(EDK2_BASETOOLS) && \
-	export PATH=$$(EDK2_BASETOOLS)/BinWrappers/PosixLike:$$(PATH) && \
-	export ARMLINUXGCC_TOOLS_PREFIX=$$(UEFI_TOOLS_PREFIX) && \
+	export PATH=`pwd`:$$(dir $$(UEFI_TOOLS_PREFIX)):$$(EDK2_BASETOOLS)/BinWrappers/PosixLike:$$(PATH) && \
+	export CROSS_COMPILE=$(notdir $$(UEFI_TOOLS_PREFIX)) && \
+	if [ -e $$(UEFI_TOOLS_PREFIX)ld.bfd ]; then \
+		echo "Forcing use of GNU linker (as gold doesn't work)"; \
+		ln -sf $$(UEFI_TOOLS_PREFIX)ld.bfd $$(notdir $(TARGET_TOOLS_PREFIX))ld; \
+	fi && \
 	export MAKEFLAGS= && \
 	build -N -a ARM -t ARMLINUXGCC -b $(EDK2_DEB_REL) -D EDK2_OUT_DIR=$(EDK2_OUT_DIR)/$(3) $(4)
 
