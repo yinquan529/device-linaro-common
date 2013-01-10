@@ -17,6 +17,9 @@ TARGET_KERNEL_SOURCE ?= $(shell if [ -e $(TARGET_AUTO_KDIR) ]; then echo $(TARGE
 KERNEL_SRC := $(TARGET_KERNEL_SOURCE)
 
 
+ifneq ($(strip $(ANDROID_64)),true)
+# Building perf for an architecture different from the kernel's is currently
+# not supported.
 ifneq ($(strip $(BUILD_TINY_ANDROID)),true)
 # We can build perf if it's included in the kernel and has the
 # Android compatibility patch in
@@ -24,6 +27,7 @@ ifneq ($(wildcard $(KERNEL_SRC)/tools/perf/compat-android.h),)
 	INCLUDE_PERF ?= 1
 ifeq ($(INCLUDE_PERF),1)
 	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a $(TARGET_OUT_SHARED_LIBRARIES)/libc.so
+endif
 endif
 endif
 endif
