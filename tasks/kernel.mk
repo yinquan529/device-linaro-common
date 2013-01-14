@@ -166,6 +166,7 @@ all_dtbs : $(INSTALLED_KERNEL_TARGET)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC) && \
 	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) $(DTB_TARGETS)
+	-mv -f $(KERNEL_OUT)/arch/arm/boot/dts/*.dtb $(KERNEL_OUT)/arch/arm/boot/
 
 $(patsubst %,$(KERNEL_OUT)/arch/arm/boot/%,$(DTB_TARGETS)) : all_dtbs
 
