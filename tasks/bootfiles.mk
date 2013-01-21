@@ -57,6 +57,9 @@ endif
 ifeq ($(TARGET_USE_XLOADER),true)
 	cp $(TOP)/device/linaro/x-loader/MLO $(PRODUCT_OUT)/boot
 endif
+ifneq ($(TARGET_HWPACK_CONFIG),)
+	cp $(TARGET_HWPACK_CONFIG) $(PRODUCT_OUT)/boot/config
+endif
 
 $(INSTALLED_BOOTTARBALL_TARGET): copybootfiles
 
