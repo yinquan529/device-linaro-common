@@ -1,0 +1,130 @@
+Instructions for "https://android-build.linaro.org/builds/~linaro-android-restricted/juice-aosp/":https://android-build.linaro.org/builds/~linaro-android-restricted/juice-aosp/
+
+h2. Prerequisites
+
+To get the components you need to make a build you must be able to ssh to git.linaro.org and be part of the big-little-switcher-private group. Contact "Philip Colmer" <philip.colmer@linaro.org> for access requests.
+
+h2. Get the source
+
+<pre>
+  $ curl "http://android.git.linaro.org/gitweb?p=tools/repo.git;a=blob_plain;f=repo;hb=refs/heads/stable" > repo
+  $ chmod +x repo
+  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.2.1 -m vexpress-juice-aosp.xml
+  $ sed -i "s/linaro-big-little-switcher-bot/$USER/" .repo/manifest.xml
+  $ ./repo sync # this may take some time
+</pre>
+
+h2. Build
+
+<pre>
+  $ export CPUS=`grep -c processor /proc/cpuinfo`
+
+  $ export TARGET_PRODUCT=vexpress
+  $ export TARGET_SIMULATOR=false
+  $ export TARGET_BUILD_VARIANT=eng
+  $ export DEBUG_NO_STRICT_ALIASING=yes
+  $ export DEBUG_NO_STDCXX11=yes
+  $ export TOOLCHAIN_TRIPLET=arm-linux-androideabi
+  $ export BUILD_FS_IMAGE=1
+  $ export LINARO_BUILD_SPEC=juice-aosp
+  $ export ANDROID_64=true
+
+  $ . build/envsetup.sh
+  $ make -j${CPUS} boottarball systemtarball userdatatarball
+</pre>
+
+h2. Get linaro image tools
+
+Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
+
+<pre>
+  $ sudo add-apt-repository ppa:linaro-maintainers/tools
+  $ sudo apt-get update
+  $ sudo apt-get install linaro-image-tools
+</pre>
+
+If you're using a released build (with a -release or from releases.linaro.org), skip this step.
+If you're using a "tip" build do not skip the step and do the following:
+
+<pre>
+  $ sudo apt-get install bzr
+  $ bzr branch lp:linaro-image-tools
+</pre>
+
+h2. Create binary for the ARM RTSM AEMv8 VE model
+
+Run linaro image tools
+
+pre. $ linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
+
+If you're using tip of linaro image tools
+
+pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
+
+h2. Extract the axf file
+
+pre. tar -jxvf out/target/product/vexpress/boot.tar.bz2
+
+h2. Run the build
+
+<pre>
+  $ export MODEL_PATH=/path/to/RTSM_AEMv8_VE
+  $ model_shell64 -a $(pwd)/boot/linux-system.axf \
+        $MODEL_PATH/models/Linux64_GCC-4.1/RTSM_VE_AEMv8A.so \
+        -C motherboard.mmc.p_mmc_file=$(pwd)/mmc.bin \
+        -C cluster.NUM_CORES=1 \
+        -C cluster.cpu0.unpredictable_WPMASKANDBAS=0 \
+        -C cluster.cpu0.unpredictable_non-contigous_BAS=0 \
+        -C cluster.cpu1.unpredictable_WPMASKANDBAS=0 \
+        -C cluster.cpu1.unpredictable_non-contigous_BAS=0 \
+        -C cluster.cpu2.unpredictable_WPMASKANDBAS=0 \
+        -C cluster.cpu2.unpredictable_non-contigous_BAS=0 \
+        -C cluster.cpu3.unpredictable_WPMASKANDBAS=0 \
+        -C cluster.cpu3.unpredictable_non-contigous_BAS=0 \
+        -C cluster.take_ccfail_undef=0 \
+        -C motherboard.hostbridge.userNetworking=true \
+        -C motherboard.hostbridge.userNetPorts="5556=6565" \
+        -C motherboard.smsc_91c111.enabled=1
+</pre>
+
+h3. Black screen
+
+The boot screen has been disabled to speed up booting. This means you may not see anything on the CLCD terminal for a while depending on the performance of the machine the model is running on. For example a first boot on a 2 GHz machine with 32 GB of RAM took 10 minutes. Subsequent boots should take approximately half the time to boot.
+
+h2. Console redirection
+
+To redirect the console open a terminal and run
+
+pre. telnet 127.0.0.1 5000
+
+h2. Run the Android SDK
+
+h3. Disable suspend
+
+In the model's console run
+
+pre. $ disablesuspend.sh
+
+h3. Attach ADB
+
+In the model's console run
+
+<pre>
+  $ stop adbd
+  $ setprop service.adb.tcp.port 6565
+  $ start adbd
+</pre>
+
+In a seperate terminal run
+
+<pre>
+  $ adb kill-server
+  $ adb connect 127.0.0.1:5556
+  $ adb wait-for-device
+</pre>
+
+You can then run
+
+pre. adb shell
+
+You can also run all of the standard Android SDK tools. Learn more at "http://developer.android.com/sdk/index.html":http://developer.android.com/sdk/index.html
