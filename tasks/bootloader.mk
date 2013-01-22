@@ -129,10 +129,10 @@ $(1) : $(2) edk2_tools FORCE_BOOTLOADER_REMAKE | $(EDK2_PREVIOUS_ROM)
 	export WORKSPACE=$$(EDK2_WORKSPACE) && \
 	export EDK_TOOLS_PATH=$$(EDK2_BASETOOLS) && \
 	export PATH=`pwd`:$$(dir $$(UEFI_TOOLS_PREFIX)):$$(EDK2_BASETOOLS)/BinWrappers/PosixLike:$$(PATH) && \
-	export CROSS_COMPILE=$(notdir $$(UEFI_TOOLS_PREFIX)) && \
+	export CROSS_COMPILE=$$(notdir $$(UEFI_TOOLS_PREFIX)) && \
 	if [ -e $$(UEFI_TOOLS_PREFIX)ld.bfd ]; then \
 		echo "Forcing use of GNU linker (as gold doesn't work)"; \
-		ln -sf $$(UEFI_TOOLS_PREFIX)ld.bfd $$(notdir $(TARGET_TOOLS_PREFIX))ld; \
+		ln -sf $$(UEFI_TOOLS_PREFIX)ld.bfd $$(notdir $$(UEFI_TOOLS_PREFIX))ld; \
 	fi && \
 	export MAKEFLAGS= && \
 	build -N -a ARM -t ARMLINUXGCC -b $(EDK2_DEB_REL) -D EDK2_OUT_DIR=$(EDK2_OUT_DIR)/$(3) $(4)
