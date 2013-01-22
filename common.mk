@@ -68,8 +68,11 @@ PRODUCT_PACKAGES := \
     sysbench
 
 #packages we are using for benchmarking
+# d8 replaces v8shell -- we're leaving both packages in here for now so
+# older builds still get v8shell.
 PRODUCT_PACKAGES += \
     v8shell \
+    d8 \
     skia_bench
 
 V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
