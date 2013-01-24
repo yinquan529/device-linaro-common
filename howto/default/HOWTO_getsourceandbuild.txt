@@ -12,7 +12,16 @@ The linaro_android_build_cmds.sh script will download the source and create the 
 
 <pre>
   $ chmod +x linaro_android_build_cmds.sh
-  $ ./linaro_android_build_cmds.sh
+  $ ./linaro_android_build_cmds.sh -h #To print the script usage
+</pre>
+
+Most commonly used build options:
+
+<pre>
+  $ ./linaro_android_build_cmds.sh -t #To build from the tip of the branch without overlay
+  $ ./linaro_android_build_cmds.sh -t -o <overlay> #To build from the tip of the branch with provided overlay
+  $ ./linaro_android_build_cmds.sh -m <pinned_manifest> -o <overlay> #To reproduce an exact build from pinned manifest
+  $ ./linaro_android_build_cmds.sh -t -l <login-id> #Provide login/access ID to clone and build code from linaro-private repositories
 </pre>
 
 h2. Get linaro image tools
