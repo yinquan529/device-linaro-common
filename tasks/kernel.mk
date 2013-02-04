@@ -35,12 +35,12 @@ endif
 ifeq ($(strip $(ANDROID_64)),true)
 KERNEL_TARGET := Image
 else
-ifeq ($(strip $(TARGET_BOOTLOADER_TYPE)),fastboot)
-BOOTLOADER_DEP :=
-KERNEL_TARGET := zImage
-else
+ifeq ($(strip $(TARGET_BOOTLOADER_TYPE)),uboot)
 BOOTLOADER_DEP := $(PRODUCT_OUT)/u-boot.bin
-KERNEL_TARGET := uImage
+KERNEL_TARGET := $(or $(KERNEL_TARGET),uImage)
+else
+BOOTLOADER_DEP :=
+KERNEL_TARGET := $(or $(KERNEL_TARGET),zImage)
 endif
 endif
 
