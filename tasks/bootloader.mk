@@ -3,14 +3,6 @@
 BOOTLOADER_OUT = $(realpath $(PRODUCT_OUT))/boot
 BOOTLOADER_TARGETS :=
 
-# Set source path for u-boot
-# 1. use TARGET_UBOOT_SOURCE if defined
-# 2. try to use u-boot/<vendor>/<device> if it exists
-# 3. try to use u-boot (done in the android_uboot rule)
-TARGET_AUTO_UDIR := $(shell echo $(TARGET_DEVICE_DIR) | sed -e 's/^device/u-boot/g')
-TARGET_UBOOT_SOURCE ?= $(shell if [ -e $(TARGET_AUTO_UDIR) ]; then echo $(TARGET_AUTO_UDIR); else echo u-boot; fi;)
-UBOOT_SRC := $(TARGET_UBOOT_SOURCE)
-
 # Bootloaders have their own separate makefiles and we don't track the
 # dependencies these, therefore we need to remake them every time in case
 # files need updating. To facilitate this, bootloader rules will depend on

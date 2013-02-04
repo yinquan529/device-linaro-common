@@ -1,4 +1,3 @@
-ifeq ($(TARGET_USE_UBOOT), true)
 ifneq ($(UBOOT_TOOLS_PREFIX),)
 UBOOT_TCDIR = $(realpath $(shell dirname $(UBOOT_TOOLS_PREFIX)))
 UBOOT_TCPREFIX = $(shell basename $(UBOOT_TOOLS_PREFIX))
@@ -23,6 +22,8 @@ endif
 TARGET_AUTO_UDIR := $(shell echo $(TARGET_DEVICE_DIR) | sed -e 's/^device/u-boot/g')
 TARGET_UBOOT_SOURCE ?= $(shell if [ -e $(TARGET_AUTO_UDIR) ]; then echo $(TARGET_AUTO_UDIR); else echo u-boot; fi;)
 UBOOT_SRC := $(TARGET_UBOOT_SOURCE)
+
+ifeq ($(TARGET_USE_UBOOT), true)
 
 ifeq ($(USE_PREBUILT_UBOOT),)
 USE_PREBUILT_UBOOT=false
