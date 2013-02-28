@@ -55,6 +55,8 @@ h2. Run the build
 
 <pre>
   $ export MODEL_PATH=/path/to/RTSM_AEMv8_VE
+  $ export ARMLMD_LICENSE_FILE="8224@flexlm.linaro.org"
+  $ ssh -L 8224:localhost:8224 -L 18224:localhost:18224 -N portfwd@23.21.178.170 &
   $ model_shell64 -a $(pwd)/boot/linux-system.axf \
         $MODEL_PATH/models/Linux64_GCC-4.1/RTSM_VE_AEMv8A.so \
         -C motherboard.mmc.p_mmc_file=$(pwd)/mmc.bin \
