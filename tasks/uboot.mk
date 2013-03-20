@@ -2,17 +2,10 @@ ifneq ($(UBOOT_TOOLS_PREFIX),)
 UBOOT_TCDIR = $(realpath $(shell dirname $(UBOOT_TOOLS_PREFIX)))
 UBOOT_TCPREFIX = $(shell basename $(UBOOT_TOOLS_PREFIX))
 else
-ifneq ($(findstring prebuilt,$(TARGET_TOOLS_PREFIX)),)
-# The AOSP prebuilt toolchain is too old to compile
-# current u-boot, so we fall back to a system compiler
-UBOOT_TCDIR = $(shell basename `which arm-linux-gnueabi-gcc`)
-UBOOT_TCPREFIX = arm-linux-gnueabi-
-else
 UBOOT_TCDIR = $(realpath $(shell dirname $(TARGET_TOOLS_PREFIX)))
 # u-boot is not an Android application and should be
 # built with the bare metal toolchain if it is available
 UBOOT_TCPREFIX = $(shell if [ -e $(UBOOT_TCDIR)/arm-eabi-gcc ]; then echo arm-eabi-; else basename $(TARGET_TOOLS_PREFIX); fi)
-endif
 endif
 
 # Set source path for u-boot
