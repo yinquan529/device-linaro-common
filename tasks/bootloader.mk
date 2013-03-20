@@ -54,19 +54,11 @@ BOOTLOADER_TARGETS += $(UBOOT_FLAVOUR_TARGETS)
 # UEFI
 #
 
-ifneq ($(UEFI_TOOLS_PREFIX),)
-# Used supplied prefix
-else
-ifneq ($(findstring prebuilt,$(TARGET_TOOLS_PREFIX)),)
-# The AOSP prebuilt toolchain is too old to compile UEFI, so we fall
-# back to a system compiler
-UEFI_TOOLS_PREFIX := arm-linux-gnueabi-
-else
+ifeq ($(UEFI_TOOLS_PREFIX),)
 # UEFI is not an Android application and should be built with the bare
 # metal toolchain if it is available...
 UEFI_TOOLS_DIR = $(realpath $(dir $(TARGET_TOOLS_PREFIX)))/
 UEFI_TOOLS_PREFIX = $(UEFI_TOOLS_DIR)$(shell if [ -e $(UEFI_TOOLS_DIR)arm-eabi-gcc ]; then echo arm-eabi-; else echo $(notdir $(TARGET_TOOLS_PREFIX)); fi)
-endif
 endif
 
 
