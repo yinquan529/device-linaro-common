@@ -60,6 +60,10 @@ endif
 ifneq ($(TARGET_HWPACK_CONFIG),)
 	cp $(TARGET_HWPACK_CONFIG) $(PRODUCT_OUT)/boot/config
 endif
+ifeq ($(TARGET_BOARD_PLATFORM),origen_quad)
+	cp -r $(TOP)/vendor/samsung/origen_quad/proprietary/bootloader/* $(PRODUCT_OUT)/boot
+	cp -r $(TOP)/vendor/samsung/origen_quad/proprietary/EULA.txt $(PRODUCT_OUT)/boot
+endif
 
 $(INSTALLED_BOOTTARBALL_TARGET): copybootfiles
 
