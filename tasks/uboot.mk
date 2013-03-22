@@ -69,6 +69,10 @@ ifeq ($(TARGET_PRODUCT), origen_quad)
 	mkdir -p $(PRODUCT_OUT)/boot
 	cp $(PRODUCT_OUT)/obj/u-boot/spl/origen_quad-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
 endif
+ifeq ($(TARGET_PRODUCT), full_arndale)
+	mkdir -p $(PRODUCT_OUT)/boot
+	cp $(PRODUCT_OUT)/obj/u-boot/spl/smdk5250-spl.bin $(PRODUCT_OUT)/boot/u-boot-mmc-spl.bin
+endif
 endif
 
 ifneq (,$(filter $(TARGET_PRODUCT),pandaboard panda5))
