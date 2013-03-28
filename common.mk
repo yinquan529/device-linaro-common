@@ -39,6 +39,7 @@ PRODUCT_PACKAGES := \
     hwcomposer.default \
     libmicro \
     powertop \
+    powerdebug \
     mmtest \
     $(ZEROXBENCHMARK_NATIVE_APPS) \
     GLMark2 \
