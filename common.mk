@@ -91,7 +91,7 @@ PRODUCT_COPY_FILES += \
 else
 ifneq ($(wildcard $(TOP)/device/linaro/common/howto/default/$1),)
 PRODUCT_COPY_FILES += \
-	device/linaro/common/howto/default/$1:howto/$1
+	device/linaro/common/howto/default/$1:$1
 endif
 endif
 endef
