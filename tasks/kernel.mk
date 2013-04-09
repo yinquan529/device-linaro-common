@@ -74,6 +74,7 @@ ifeq ($(INCLUDE_PERF),1)
 	cp -f $(KERNEL_OUT)/tools/perf/perf $(REALTOP)/$(PRODUCT_OUT)/system/bin/
 endif
 
+ifneq ($(BUILD_KERNEL_MODULES),false)
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC) &&\
@@ -85,6 +86,9 @@ android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD modules_install INSTALL_MOD_PATH=$(KERNEL_OUT)/modules_for_android
 	mkdir -p $(TARGET_OUT)/modules
 	find $(KERNEL_OUT)/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
+else
+android_kernel_modules:
+endif
 
 #NOTE: the gator driver's Makefile wasn't done properly and doesn't put build
 #      artifacts in the O=$(KERNEL_OUT)
