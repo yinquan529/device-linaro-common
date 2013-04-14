@@ -60,7 +60,7 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android_snowbal
   $ dconf write /org/gnome/desktop/media-handling/automount $TMP1
   $ dconf write /org/gnome/desktop/media-handling/automount-open $TMP2
 
-  Remove the SD card from the device writer and plug it into the board.
+  Remove the SD card from the device writer and plug it into the board. Note that the linaro android snowball build only supports booting from sdcard at this time.
 
 = Check console output =
 
@@ -75,53 +75,19 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android_snowbal
    During the 12.05 cycle, U-Boot changed and must be upgraded in eMMC if your
    boot line is older than: U-boot 2012.04.01 (May 24 2012 - 19:50:12)
 
-   If you only want to be able to boot from the SD card and don't care about
-   booting from the eMMC (internal flash), the quick solution is to do:
+   The solution is to do:
+ 
+   If you don't have riff:
 
-   $ sudo linaro-android-media-create --image-file snowball.img --image-size 1500M --dev snowball_emmc --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
-   $ sudo riff -f snowball.img
-
-   If you don't have riff, follow the instructions below to install it.
-
-   If you want to be able to boot from the eMMC, you need to modify a few lines
-   in init.partitions.rc file.
-
-   $ mkdir temp
-   $ cd temp
-   $ mv ../boot.tar.bz2 .
-   $ tar xjf boot.tar.bz2
-   $ cd boot
-   $ mkdir temp
-   $ cd temp
-   $ mv ../uInitrd .
-   $ dd if=uInitrd of=initrd.gz bs=64 skip=1
-   $ gunzip initrd.gz
-   $ mkdir init
-   $ cd init
-   $ cpio -i < ../initrd
-
-   Open the init.partition.rc file and follow the instruction in the file
-
-   $ sudo find . | cpio -o -H newc | gzip > ../newinitrd.cpio.gz
-   $ mkimage -A arm -O linux -T ramdisk -C gzip -a 0 -e 0 -n initramfs -d ../newinitrd.cpio.gz ../uInitrd.new
-   $ cd ../..
-   $ cp temp/init/uInitrd.new uInitrd
-   $ rm -rf temp
-   $ cd ..
-   $ tar cjf boot.tar.bz2 boot
-   $ cd ..
-   $ mv temp/boot.tar.bz2 .
-   $ rm -rf temp
+   $ sudo add-apt-repository ppa:igloocommunity-maintainers/snowball-tools
+   $ sudo apt-get update
+   $ sudo apt-get install riff
 
    Download startupfiles from
    http://www.igloocommunity.org/download/linaro/startupfiles/latest
 
    $ tar -xvf startupfiles_3.0.8-0.tar.gz
    $ linaro-android-media-create --image-file snowball.img --image-size 1500M --dev snowball_emmc --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
-
-   $ sudo add-apt-repository ppa:igloocommunity-maintainers/snowball-tools
-   $ sudo apt-get update
-   $ sudo apt-get install riff
 
    (OPTIONAL) Remove the PPA
 
@@ -141,13 +107,3 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android_snowbal
    Please be patient. If the board doesn't come up, you might be affected by
    https://bugs.launchpad.net/bugs/823313 bug.
 
- * Note 2 - ADB only works over IP
-
-   In the console type:
-     stop adbd
-     setprop service.adb.tcp.port 6565
-     start adbd
-     ifconfig eth0 # to get boardsIP
-
-   On the host type:
-     adb connect boardsIP:6565
