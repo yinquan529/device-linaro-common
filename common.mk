@@ -87,7 +87,7 @@ PRODUCT_COPY_FILES := \
 define copy-howto
 ifneq ($(wildcard $(TOP)/device/linaro/common/howto/$(LINARO_BUILD_SPEC)/$1),)
 PRODUCT_COPY_FILES += \
-	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/$1:howto/$1
+	device/linaro/common/howto/$(LINARO_BUILD_SPEC)/$1:$1
 else
 ifneq ($(wildcard $(TOP)/device/linaro/common/howto/default/$1),)
 PRODUCT_COPY_FILES += \
