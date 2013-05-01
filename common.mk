@@ -106,6 +106,11 @@ HOWTOS := \
 PRODUCT_COPY_FILES += \
         device/linaro/common/media_codecs.xml:system/etc/media_codecs.xml
 
+ifneq ($(wildcard $(TOP)/build-info),)
+PRODUCT_COPY_FILES += \
+	build-info/BUILD-INFO.txt:BUILD-INFO.txt
+endif
+
 $(foreach howto,$(HOWTOS),$(eval $(call copy-howto,$(howto))))
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
