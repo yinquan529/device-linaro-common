@@ -32,7 +32,7 @@ ifneq ($(strip $(BUILD_TINY_ANDROID)),true)
 ifneq ($(wildcard $(KERNEL_SRC)/tools/perf/compat-android.h),)
 	INCLUDE_PERF ?= 1
 ifeq ($(INCLUDE_PERF),1)
-	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a $(TARGET_OUT_SHARED_LIBRARIES)/libc.so
+	PERF_DEP := $(PRODUCT_OUT)/obj/STATIC_LIBRARIES/libelf_intermediates/libelf.a $(PRODUCT_OUT)/obj/lib/crtend_android.o $(PRODUCT_OUT)/obj/lib/crtbegin_dynamic.o $(TARGET_OUT_SHARED_LIBRARIES)/libc.so
 endif
 endif
 endif
@@ -75,6 +75,7 @@ ifeq ($(INCLUDE_PERF),1)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC)/tools/perf &&\
 	mkdir -p $(KERNEL_OUT)/tools/perf &&\
+	mkdir -p $(REALTOP)/$(PRODUCT_OUT)/system/bin/ &&\
 	if [ -e $(ABS_TARGET_TOOLS_PREFIX)ld.bfd ]; then LD=$(ABS_TARGET_TOOLS_PREFIX)ld.bfd; else LD=$(ABS_TARGET_TOOLS_PREFIX)ld; fi && \
 	$(MAKE) ANDROID_CFLAGS="$(TARGET_EXTRA_CFLAGS) $(LOCAL_CFLAGS) -isystem $(REALTOP)/bionic/libc/include -isystem $(REALTOP)/bionic/libc/kernel/common -isystem $(REALTOP)/bionic/libc/kernel/arch-arm -isystem $(REALTOP)/bionic/libc/arch-arm/include -I$(REALTOP)/external/elfutils/libelf -isystem $(REALTOP)/bionic/libm/include -isystem $(shell dirname $(ABS_TARGET_TOOLS_PREFIX))/../include -I$(KERNEL_OUT)/tools/perf" BASIC_LDFLAGS="-nostdlib -Wl,-dynamic-linker,/system/bin/linker,-z,muldefs$(shell if test $(PLATFORM_SDK_VERSION) -lt 16; then echo -ne ',-T$(REALTOP)/$(BUILD_SYSTEM)/armelf.x'; fi),-z,nocopyreloc,--no-undefined -L$(REALTOP)/$(TARGET_OUT_STATIC_LIBRARIES) -L$(REALTOP)/$(PRODUCT_OUT)/system/lib -L$(REALTOP)/external/elfutils -L$(realpath $(PRODUCT_OUT))/obj/STATIC_LIBRARIES/libelf_intermediates -lpthread -lelf -lm -lc $(REALTOP)/$(TARGET_CRTBEGIN_DYNAMIC_O) $(REALTOP)/$(TARGET_CRTEND_O)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT)/tools/perf/ OUTPUT=$(KERNEL_OUT)/tools/perf/ ARCH=$(ARCH) CROSS_COMPILE=$(ABS_TARGET_TOOLS_PREFIX) LD=$$LD prefix=/system NO_DWARF=1 NO_NEWT=1 NO_LIBPERL=1 NO_LIBPYTHON=1 NO_GTK2=1 NO_STRLCPY=1 WERROR=0 && \
 	cp -f $(KERNEL_OUT)/tools/perf/perf $(REALTOP)/$(PRODUCT_OUT)/system/bin/
@@ -182,11 +183,77 @@ $(patsubst %,$(KERNEL_OUT)/arch/arm/boot/%,$(DTB_TARGETS)) : all_dtbs
 
 endif
 
-
 $(INSTALLED_BOOTTARBALL_TARGET): $(DTB_INSTALL_TARGETS)
 
 $(INSTALLED_DTB_TARGET): $(DTB_INSTALL_TARGETS)
 
 ifeq ($(TARGET_PRODUCT), vexpress_rtsm)
 bootwrapper: $(DTB_INSTALL_TARGETS)
+endif
+
+kernel_files : $(INSTALLED_KERNEL_TARGET) $(DTB_INSTALL_TARGETS) android_kernel_modules
+	cp $(INSTALLED_KERNEL_TARGET) $(PRODUCT_OUT)/boot/
+
+PREBUILT_IMAGES_DIR := $(PRODUCT_OUT)/prebuilt-images/
+$(PREBUILT_IMAGES_DIR) :
+	mkdir -p $(PREBUILT_IMAGES_DIR)
+
+ifneq ($(strip $(ANDROID_PREBUILT_URL)),)
+REAL_OUT=$(realpath $(PRODUCT_OUT))
+UPDATE_TARBALL := device/linaro/common/tasks/updatetarball.sh
+define update-boottarball
+    $(hide) echo "Target boot fs tarball: $(INSTALLED_BOOTTARBALL_TARGET)"
+    $(hide) $(UPDATE_TARBALL) $(FS_GET_STATS) $(PRODUCT_OUT) boot $(PRIVATE_BOOT_TAR) \
+                 $(INSTALLED_BOOTTARBALL_TARGET)
+endef
+define update-systemtarball
+    $(hide) echo "Target system fs tarball: $(INSTALLED_SYSTEMTARBALL_TARGET)"
+    $(UPDATE_TARBALL) $(FS_GET_STATS) $(PRODUCT_OUT) system $(PRIVATE_SYSTEM_TAR) \
+                 $(INSTALLED_SYSTEMTARBALL_TARGET)
+endef
+
+download_prebuilt_boot_image : $(PREBUILT_IMAGES_DIR)
+	cd $(PREBUILT_IMAGES_DIR)  &&\
+    wget -nv --no-check-certificate $(ANDROID_PREBUILT_URL)/boot.tar.bz2
+download_prebuilt_system_image : $(PREBUILT_IMAGES_DIR)
+	cd $(PREBUILT_IMAGES_DIR)  &&\
+    wget -nv --no-check-certificate $(ANDROID_PREBUILT_URL)/system.tar.bz2
+download_prebuilt_userdata_image : $(PREBUILT_IMAGES_DIR)
+	cd $(PREBUILT_IMAGES_DIR)  &&\
+    wget -nv --no-check-certificate $(ANDROID_PREBUILT_URL)/userdata.tar.bz2
+
+PRIVATE_BOOT_TAR := $(boot_tar)
+## do we need to generate the cmdline and uInitrd
+## or use the old cmdline and uInitrd
+## here use the  old cmdline and uInitrd first
+#	tar xvf boot.tar boot/uInitrd &&\
+#	cp -f boot/uInitrd $(REAL_OUT)/uInitrd
+$(PRIVATE_BOOT_TAR): download_prebuilt_boot_image
+	rm -fr $(PRODUCT_OUT)/boot.tar &&\
+	cd $(PREBUILT_IMAGES_DIR)  &&\
+	bunzip2 --keep boot.tar.bz2 &&\
+	mv boot.tar $(REAL_OUT)/
+
+COMBINED_BOOTTARBALL_TARGET : $(PRIVATE_BOOT_TAR) $(FS_GET_STATS) kernel_files
+	$(update-boottarball)
+
+PRIVATE_SYSTEM_TAR := $(system_tar)
+$(PRIVATE_SYSTEM_TAR): download_prebuilt_system_image
+	rm -fr $(PRODUCT_OUT)/system.tar &&\
+	cd $(PREBUILT_IMAGES_DIR)  &&\
+	bunzip2 --keep system.tar.bz2 &&\
+	mv system.tar $(REAL_OUT)/
+COMBINED_SYSTEMTARBALL_TARGET : $(PRIVATE_SYSTEM_TAR) $(FS_GET_STATS) kernel_files
+	$(update-systemtarball)
+
+COMBINED_USERDATATARBALL_TARGET : download_prebuilt_userdata_image
+	cp -uvf $(PREBUILT_IMAGES_DIR)/userdata.tar.bz2 $(REAL_OUT)/
+
+combine_kernel_prebuilt: COMBINED_BOOTTARBALL_TARGET COMBINED_SYSTEMTARBALL_TARGET COMBINED_USERDATATARBALL_TARGET
+	if [ -d $(REALTOP)/build-info ]; then  find $(REALTOP)/build-info/ -iname BUILD-INFO.txt -exec cp {} $(REAL_OUT)/ \; ; fi
+
+else
+combine_kernel_prebuilt :
+	$(error ANDROID_PREBUILT_URL need to be set for using this combine_kernel_prebuilt target.)
+
 endif
