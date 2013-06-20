@@ -24,6 +24,7 @@ PRODUCT_PACKAGES := \
     Gallery3D \
     LatinIME \
     Launcher2 \
+    linaro.android \
     Mms \
     Music \
     $(HACKERSKEYBOARD) \
