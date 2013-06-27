@@ -1,81 +1,132 @@
-Instructions for "https://android-build.linaro.org/builds/~linaro-android/vexpress-jb-gcc47-armlt-tracking-open/":https://android-build.linaro.org/builds/~linaro-android/vexpress-jb-gcc47-armlt-tracking-open/
+Linaro provides two methods for installing Linaro binary builds:
 
-h2. Get artifacts
+# Using a pre-built image, which you can download
+# Assembling your own image using provided components
 
-Scroll down to the 'Downloads' section
+h2. Pre-Installation Steps
 
-Click on each link to download:
-* boot.tar.bz2
-* system.tar.bz2
-* userdata.tar.bz2
+Before any installation begins, it is important that you ensure your Versatile Express board has the latest firmware and boot loader installed. Please check the "Firmware Update" tab on this page for the latest updates and installation instructions.
 
-h2. Get linaro image tools
+h2. Using pre-built image
 
-Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
+h3. Prerequisites
 
-<pre>
-  $ sudo add-apt-repository ppa:linaro-maintainers/tools
-  $ sudo apt-get update
-  $ sudo apt-get install linaro-image-tools
-</pre>
+* Ubuntu 12.04 64 bit or newer on your desktop PC, which you can download from "www.ubuntu.com":http://www.ubuntu.com
+* 4GB SD card or larger
+* Latest firmware installed onto the Versatile Express. Please see "Firmware Update" tab
+* This release pre-built image (vexpress.img.bz2), which you can downloaded from the above list of artifacts or just click "here":http://releases.linaro.org/13.06/android/vexpress/vexpress.img.bz2
 
-If you're using a released build (with a -release or from releases.linaro.org), skip this step.
-If you're using a "tip" build do not skip the step and do the following:
+h3. Installation Steps
 
-<pre>
-  $ sudo apt-get install bzr
-  $ bzr branch lp:linaro-image-tools
-</pre>
+* Unzip the downloaded pre-built image
+* Insert SD card into your PC and note the assigned '/dev/sdX'
 
-h2. Create media (SD card)
+bc.
+	$dmesg
+	$SDCARD=/dev/sdX # sdcard found from dmesg above
+	$bzcat vexpress.img.bz2 | sudo dd bs=64k of=$SDCARD
 
-Disable automount (instructions provided for Gnome)
+When the image is created, skip down to the section "Booting the image".
 
-<pre>
-  $ TMP1=$(dconf read /org/gnome/desktop/media-handling/automount)
-  $ TMP2=$(dconf read /org/gnome/desktop/media-handling/automount-open)
-  $ dconf write /org/gnome/desktop/media-handling/automount false
-  $ dconf write /org/gnome/desktop/media-handling/automount-open false
-</pre>
+*Note:* Windows users may use the "Image Writer for Windows":https://launchpad.net/win32-image-writer/+download
 
-Insert an SD card
+<hr>
 
-Run 'dmesg'
+h2. Building a custom image using pre-built components.
 
-pre. $ dmesg
+Sometimes, you may wish to build your own custom image for a Versatile Express. Perhaps you wish to use a more recent snapshot of the "hardware pack":https://wiki.linaro.org/HardwarePacks for Ubuntu or take the latest Android build. Whatever the reason, you will want to use the "Linaro Image Tools":https://wiki.linaro.org/Linaro-Image-Tools to create a custom image.
+
+Using components to generate the image will yield the same functionality found in the pre-built image of the same release.
+
+h3. Prerequisites
+
+* Ubuntu 12.04 64 bit or newer on your desktop PC, which you can download from "www.ubuntu.com":http://www.ubuntu.com
+* Download Artifacts from above or use the following command in your terminal
+
+bc.
+	$wget http://releases.linaro.org/13.06/android/vexpress/boot.tar.bz2
+	$wget http://releases.linaro.org/13.06/android/vexpress/system.tar.bz2
+	$wget http://releases.linaro.org/13.06/android/vexpress/userdata.tar.bz2
+
+* Download "Linaro image tools":https://wiki.linaro.org/Linaro-Image-Tools which can be obtained in two ways:
+
+** Method 1: Install them from the Linaro Image Tools "PPA":https://launchpad.net/~linaro-maintainers/+archive/tools
+
+bc.
+	$sudo add-apt-repository ppa:linaro-maintainers/tools
+	$sudo apt-get update
+	$sudo apt-get install linaro-image-tools
+
+** Method 2: Building from source
+
+bc. 	$wget http://releases.linaro.org/13.06/components/platform/linaro-image-tools/linaro-image-tools-2013.06.tar.gz
+
+* Insert SD card and note the assigned '/dev/sdX' or '/dev/mmcblk0'
+
+bc. 	$dmesg | less
 
 Look for a line that looks like the following at the end of the log
 
-pre. [288582.790722]  sdc: sdc1 sdc2 sdc3 sdc4 < sdc5 sdc6 >
+[288582.790722] sdc: sdc1 sdc2 sdc3 sdc4 <sdc5 sdc6 >
 
-*WARNING* In the next step, make sure you use /dev/"whatever you see above".
-You can erase your hard drive with the wrong parameter.
+Or, if your machine uses '/dev/mmcblkX', you may see a line line this:
 
-Run linaro image tools
+[10770.938042]  mmcblk0: p1 p2 p3 p4 < p5 p6 >
 
-pre. $ linaro-android-media-create --mmc /dev/sdc --dev vexpress --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+*WARNING:* In the next step, make sure you use /dev/"whatever you see above". *You can erase your hard drive* with the wrong parameter.
 
-If you're using tip of linaro image tools
+* Create media
 
-pre. $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev vexpress --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+bc. linaro-android-media-create --mmc /dev/sdX --dev vexpress --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
 
-Restore automount
+h2. Booting the image
 
-<pre>
-  $ dconf write /org/gnome/desktop/media-handling/automount $TMP1
-  $ dconf write /org/gnome/desktop/media-handling/automount-open $TMP2
-</pre>
+After the media create tool has finished executing, remove the SD card from your PC and insert it into the Versatile Express board.
 
-Remove the SD card from the device writer and plug it into the board.
+Before you can boot the image you will need to install the UEFI boot loader into NOR flash and update the Versatile MMC card configuration files. The instructions on the Firmware Update tab provide information on how to do this and how to configure UEFI to specify the SD card as a boot device.
 
-h2. Check console output
+h2. Advanced Setup for Benchmarking
 
-Plug in an USB-to-serial converter and run minicom
+Advanced users of Versatile Express may wish to perform benchmarking tests on the board.
 
-pre. $ minicom -D /dev/ttyUSB0 -b 38400 -w -C minicom.txt OR minicom -D /dev/ttyS0 -w -C minicom.txt
+Booting with the root filesystem on a USB mass storage device is more efficient both in terms of electrical power and processing speed.  Unfortunately, UEFI does not support booting the kernel from USB.  In order to achieve this, we recommend that you install the kernel onto SD card and the root filesystem to USB mass storage.
 
-h2. Notes
+The instructions below will create two identical images: one on SD card and one on USB mass storage.  The user is able to choose which device the kernel uses for the root filesystem by adding a command line parameter.  By default, the android kernel will expect the root filesystem to be read from the SD card.  Adding the parameter "androidboot.hardware=arm-versatileexpress-usb" to the command line will over-ride this behaviour and instruct the kernel to read the root filesystem from USB.
 
-For new users, Versatile Express setup page is available at:
+Before following these instructions, ensure that you have both an SD card and a USB mass storage device of at least 4GB inserted into your Linux machine.
 
-"http://wiki.linaro.org/ARM/VersatileExpressSetup":http://wiki.linaro.org/ARM/VersatileExpressSetup
+h3. Using a pre-built image
+
+Follow the instructions above for creating an image on an SD card.  Then repeat the instructions using the device path for your USB device.  For example:
+
+bc.
+	$dmesg
+	$SDCARD=/dev/sdX # sdcard found from dmesg above
+	$USBMS=/dev/sdY # USB device found from dmesg above
+	$bzcat vexpress.img.bz2 | sudo dd bs=64k of=$SDCARD
+	$bzcat vexpress.img.bz2 | sudo dd bs=64k of=$USBMS
+
+h3. Using linaro-android-media-create
+
+First the user should run linaro-android-media-create as described above.  Then run it again with a USB mass storage device.  This will create two release images: one on the SD card and the other on the USB device.
+
+For example:
+
+bc.
+	$dmesg
+	$SDCARD=/dev/sdX # sdcard found from dmesg above
+	$USBMS=/dev/sdY # USB device found from dmesg above
+	$linaro-android-media-create --mmc $SDCARD --dev vexpress --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+	$linaro-android-media-create --mmc $USBMS  --dev vexpress --boot boot.tar.bz2 --system system.tar.bz2 --userdata userdata.tar.bz2
+
+h3. Booting your system with the advanced setup
+
+Insert the SD card into the card slot on the Versatile Express board and insert the USB device into one of the USB device slots on the board.  The USB slots are located below the ethernet port on the rear panel.
+
+Boot the board using the standard UEFI firmware setup as described in the Firmware Update tab.
+
+When UEFI starts, you will need to interrupt the boot countdown and edit the configuration to add the following text to the end of the kernel commandline:
+
+bc. androidboot.hardware=arm-versatileexpress-usb
+
+Instructions for updating the UEFI configuration can be found on the "UEFI wiki":https://wiki.linaro.org/ARM/UEFI#Updating_your_UEFI_Configuration
