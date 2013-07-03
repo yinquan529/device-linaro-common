@@ -1,91 +1,15 @@
 Instructions for "https://android-build.linaro.org/builds/~linaro-android/<BUILD_NAME>/":https://android-build.linaro.org/builds/~linaro-android/<BUILD_NAME>/
 
-h2. Get artifacts
-
-Scroll down to the 'Downloads' section
-
-Save linaro_android_build_cmds.sh to where you'd like to make your build.
-
-h2. Run the build script
-
-The linaro_android_build_cmds.sh script will download the source and create the build.
+The build script doesn't support generation of flat filesytem images and we need to follow the general build instructions
 
 <pre>
-  $ chmod +x linaro_android_build_cmds.sh
-  $ ./linaro_android_build_cmds.sh -h #To print the script usage
+$ repo init -u http://android.git.linaro.org/git-ro/platform/manifest.git -b linaro_android_4.2.2 -m default.xml -g "common,hisilicon"
+$ sed -i "s/linaro-landing-team-hisilicon-bot/<LAUNCHPAD-ID>/g" .repo/manifests/default.xml
+$ repo sync -j1 -f
+$ source build/envsetup.sh 
+$ lunch 10
+$ export TARGET_TOOLS_PREFIX=prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.7-linaro/bin/arm-linux-androideabi-
+$ make -j32 showcommands
 </pre>
 
-Most commonly used build options:
-
-<pre>
-  $ ./linaro_android_build_cmds.sh -t #To build from the tip of the branch without overlay
-  $ ./linaro_android_build_cmds.sh -t -o <overlay> #To build from the tip of the branch with provided overlay
-  $ ./linaro_android_build_cmds.sh -m <pinned_manifest> -o <overlay> #To reproduce an exact build from pinned manifest
-  $ ./linaro_android_build_cmds.sh -t -l <login-id> #Provide login/access ID to clone and build code from linaro-private repositories
-</pre>
-
-h2. Get linaro image tools
-
-Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
-
-<pre>
-  $ sudo add-apt-repository ppa:linaro-maintainers/tools
-  $ sudo apt-get update
-  $ sudo apt-get install linaro-image-tools
-</pre>
-
-  If you're using a released build (with a -release or from releases.linaro.org), skip this step.
-  If you're using a "tip" build do not skip the step and do the following:
-
-  $ sudo apt-get install bzr
-  $ bzr branch lp:linaro-image-tools
-
-h2. Create media (SD card)
-
-Disable automount (instructions provided for Gnome)
-
-<pre>
-  $ TMP1=$(dconf read /org/gnome/desktop/media-handling/automount)
-  $ TMP2=$(dconf read /org/gnome/desktop/media-handling/automount-open)
-  $ dconf write /org/gnome/desktop/media-handling/automount false
-  $ dconf write /org/gnome/desktop/media-handling/automount-open false
-</pre>
-
-Insert an SD card
-
-Run 'dmesg'
-
-pre. $ dmesg
-
-Look for a line that looks like the following at the end of the log
-
-pre. [288582.790722]  sdc: sdc1 sdc2 sdc3 sdc4 < sdc5 sdc6 >
-
-*WARNING* In the next step, make sure you use /dev/"whatever you see above".
-You can erase your hard drive with the wrong parameter.
-
-Run linaro image tools
-
-pre. $ linaro-android-media-create --mmc /dev/sdc --dev <BOARD> --boot out/target/product/<BOARD>/boot.tar.bz2 --system out/target/product/<BOARD>/system.tar.bz2 --userdata out/target/product/<BOARD>/userdata.tar.bz2
-
-If you're using tip of linaro image tools
-
-pre. $ ./linaro-image-tools/linaro-android-media-create --mmc /dev/sdc --dev <BOARD> --boot out/target/product/<BOARD>/boot.tar.bz2 --system out/target/product/<BOARD>/system.tar.bz2 --userdata
-out/target/product/<BOARD>/userdata.tar.bz2
-
-Restore automount
-
-<pre>
-  $ dconf write /org/gnome/desktop/media-handling/automount $TMP1
-  $ dconf write /org/gnome/desktop/media-handling/automount-open $TMP2
-</pre>
-
-Remove the SD card from the device writer and plug it into the board.
-
-h2. Check console output
-
-Plug in an USB-to-serial converter and run minicom
-
-pre. $ minicom -D /dev/ttyUSB0 -w -C minicom.txt
-
-
+Follow the Installation instruction to flash the images
