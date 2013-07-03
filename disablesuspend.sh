@@ -16,11 +16,11 @@ wait_home_screen(){
             return 0
         fi
         timeout=$((timeout+1))
-        if [ $timeout = 30 ]; then
+        if [ $timeout = 180 ]; then
             echo "Failed to wait the home screen displayed!"
             return 1
         fi
-        sleep 60
+        sleep 10
     done
 }
 
