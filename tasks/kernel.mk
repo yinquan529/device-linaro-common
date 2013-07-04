@@ -199,6 +199,13 @@ $(PREBUILT_IMAGES_DIR) :
 	mkdir -p $(PREBUILT_IMAGES_DIR)
 
 ifneq ($(strip $(ANDROID_PREBUILT_URL)),)
+ifeq ($(KERNEL_TARGET),zImage)
+$(PRODUCT_OUT)/boot/uImage : $(INSTALLED_KERNEL_TARGET)
+	$(eval UIMAGE_LOADADDR ?= 0x60008000)
+	mkimage -A arm -O linux -T kernel -n "Android Kernel" -C none -a $(UIMAGE_LOADADDR) -e $(UIMAGE_LOADADDR) -d $< $@
+COMBINED_BOOTTARBALL_TARGET : $(PRODUCT_OUT)/boot/uImage
+endif
+
 REAL_OUT=$(realpath $(PRODUCT_OUT))
 UPDATE_TARBALL := device/linaro/common/tasks/updatetarball.sh
 define update-boottarball
