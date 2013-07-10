@@ -198,9 +198,13 @@ PREBUILT_IMAGES_DIR := $(PRODUCT_OUT)/prebuilt-images/
 $(PREBUILT_IMAGES_DIR) :
 	mkdir -p $(PREBUILT_IMAGES_DIR)
 
+PRODUCT_OUT_BOOT_DIR := $(PRODUCT_OUT)/boot
+$(PRODUCT_OUT_BOOT_DIR) :
+	mkdir -p $(PRODUCT_OUT_BOOT_DIR)
+
 ifneq ($(strip $(ANDROID_PREBUILT_URL)),)
 ifeq ($(KERNEL_TARGET),zImage)
-$(PRODUCT_OUT)/boot/uImage : $(INSTALLED_KERNEL_TARGET)
+$(PRODUCT_OUT)/boot/uImage : $(INSTALLED_KERNEL_TARGET) | $(PRODUCT_OUT_BOOT_DIR)
 	$(eval UIMAGE_LOADADDR ?= 0x60008000)
 	mkimage -A arm -O linux -T kernel -n "Android Kernel" -C none -a $(UIMAGE_LOADADDR) -e $(UIMAGE_LOADADDR) -d $< $@
 COMBINED_BOOTTARBALL_TARGET : $(PRODUCT_OUT)/boot/uImage
