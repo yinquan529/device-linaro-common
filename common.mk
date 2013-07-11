@@ -77,11 +77,6 @@ PRODUCT_PACKAGES += \
     d8 \
     skia_bench
 
-ifneq ($(wildcard $(TOP)/external/linaro-android-kernel-test),)
-PRODUCT_PACKAGES += \
-    mkfs.vfat
-endif
-
 V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
 	$(js):data/benchmark/v8/$(notdir $(js)))
 
