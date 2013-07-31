@@ -55,7 +55,7 @@ endif
 ifeq ($(strip $(ANDROID_64)),true)
 ARCH := arm64
 LOCAL_CFLAGS=
-KERNEL_COMPILER_PATHS := $(REALTOP)/gcc-linaro-aarch64-linux-gnu-4.7/bin:../$(BUILD_OUT_EXECUTABLES)
+KERNEL_COMPILER_PATHS := $(REALTOP)/gcc-linaro-aarch64-linux-gnu/bin:../$(BUILD_OUT_EXECUTABLES)
 else
 ARCH := arm
 LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
