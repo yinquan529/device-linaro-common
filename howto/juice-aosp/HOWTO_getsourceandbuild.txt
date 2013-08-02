@@ -9,7 +9,7 @@ h2. Get the source
 <pre>
   $ curl "http://android.git.linaro.org/gitweb?p=tools/repo.git;a=blob_plain;f=repo;hb=refs/heads/stable" > repo
   $ chmod +x repo
-  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.2.1 -m vexpress-juice-aosp.xml
+  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.3 -m vexpress-juice-aosp.xml
   $ sed -i "s/linaro-big-little-switcher-bot/$USER/" .repo/manifest.xml
   $ ./repo sync # this may take some time
 </pre>
@@ -69,6 +69,8 @@ h2. Run the build
 
 <pre>
   $ export MODEL_PATH=/path/to/RTSM_AEMv8_VE
+  $ export ARMLMD_LICENSE_FILE="8224@localhost"
+  $ ssh -L 8224:localhost:8224 -L 18224:localhost:18224 -N $USER@flexlm.linaro.org
   $ model_shell64 -a $(pwd)/boot/linux-system.axf \
         $MODEL_PATH/models/Linux64_GCC-4.1/RTSM_VE_AEMv8A.so \
         -C motherboard.mmc.p_mmc_file=$(pwd)/mmc.bin \
