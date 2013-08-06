@@ -74,6 +74,14 @@ Restore automount
 
 Remove the SD card from the device writer and plug it into the board.
 
+h2. Using the Prebuilt image.
+Download the pandaboard.img.bz2 and flash it.
+<pre>
+ $bunzip2 -c {image-file} | sudo dd bs=64k of={/dev/mmcblk0 or /dev/sdX}
+</pre>
+Follow the "Install graphics libraries"
+*Note*: The image will not boot without the graphics libraries.
+
 h2. Check console output
 
 Plug in an USB-to-serial converter and run minicom
