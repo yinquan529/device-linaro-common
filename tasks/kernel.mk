@@ -13,6 +13,8 @@ ABS_TARGET_TOOLS_PREFIX = $(shell cd `dirname $(TARGET_TOOLS_PREFIX)` && pwd)/$(
 REALTOP=$(realpath $(TOP))
 
 KERNEL_OUT=$(realpath $(PRODUCT_OUT))/obj/kernel
+# Certain devices load mmc driver as module and hence kernel module need to be in initrd
+TARGET_MODULES_OUT ?= $(TARGET_OUT)
 
 # Decide on path for kernel
 # 1. use TARGET_KERNEL_SOURCE if defined
@@ -91,8 +93,8 @@ android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(KERNEL_SRC) &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD modules_install INSTALL_MOD_PATH=$(KERNEL_OUT)/modules_for_android
-	mkdir -p $(TARGET_OUT)/modules
-	find $(KERNEL_OUT)/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
+	mkdir -p $(TARGET_MODULES_OUT)/modules
+	find $(KERNEL_OUT)/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_MODULES_OUT)/modules/ \;
 else
 android_kernel_modules:
 endif
@@ -117,8 +119,8 @@ gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 	cd $(TOP)/external/gator/driver &&\
 	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
 	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic $(GATOR_EXTRA_CFLAGS)" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(GATOR_EXTRA_MAKE_ARGS) -C $(KERNEL_PATH) M=`pwd` modules
-	mkdir -p $(TARGET_OUT)/modules
-	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_OUT)/modules/ \;
+	mkdir -p $(TARGET_MODULES_OUT)/modules
+	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_MODULES_OUT)/modules/ \;
 else
 gator_driver:
 endif
@@ -133,6 +135,8 @@ $(INSTALLED_KERNEL_TARGET): android_kernel
 	ln -sf $(KERNEL_OUT)/arch/$(ARCH)/boot/$(KERNEL_TARGET) $(INSTALLED_KERNEL_TARGET)
 
 $(INSTALLED_SYSTEMTARBALL_TARGET): android_kernel_modules out_of_tree_modules
+
+$(INSTALLED_RAMDISK_TARGET): android_kernel_modules out_of_tree_modules
 
 droidcore: android_kernel_modules out_of_tree_modules
 
