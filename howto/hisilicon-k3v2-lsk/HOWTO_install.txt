@@ -1,0 +1,18 @@
+Instructions for "https://android-build.linaro.org/builds/~linaro-android/<BUILD_NAME>/":https://android-build.linaro.org/builds/~linaro-android/<BUILD_NAME>/
+
+h2. Get artifacts
+
+Scroll down to the 'Downloads' section
+
+Click on each link to download:
+* boot.img
+* system.img
+* userdata.img
+
+h2. Power on the board and flash boot.img,system.img,userdata.img with the following commands:
+<pre>
+fastboot -i 0x12d1 flash boot boot.img
+fastboot -i 0x12d1 flash userdata userdata.img
+fastboot -i 0x12d1 flash system system.img
+</pre>
+
