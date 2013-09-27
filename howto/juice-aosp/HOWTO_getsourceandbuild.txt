@@ -1,4 +1,4 @@
-Instructions for "https://android-build.linaro.org/builds/~linaro-android-restricted/juice-aosp/":https://android-build.linaro.org/builds/~linaro-android-restricted/juice-aosp/
+Instructions for "https://android-build.linaro.org/builds/~linaro-android-restricted/juice-base-aosp/":https://android-build.linaro.org/builds/~linaro-android-restricted/juice-base-aosp/
 
 h2. Prerequisites
 
@@ -24,10 +24,12 @@ h2. Build
   $ export TARGET_BUILD_VARIANT=eng
   $ export DEBUG_NO_STRICT_ALIASING=yes
   $ export DEBUG_NO_STDCXX11=yes
+  $ export KERNEL_TOOLS_PREFIX=prebuilts/gcc/linux-x86/arm/aarch64-linux-android-linaro/bin/aarch64-linux-android-
   $ export TOOLCHAIN_TRIPLET=arm-linux-androideabi
   $ export BUILD_FS_IMAGE=1
   $ export LINARO_BUILD_SPEC=juice-aosp
   $ export ANDROID_64=true
+  $ export BIONIC_TESTS=1
 
   $ . build/envsetup.sh
   $ make -j${CPUS} boottarball systemtarball userdatatarball
