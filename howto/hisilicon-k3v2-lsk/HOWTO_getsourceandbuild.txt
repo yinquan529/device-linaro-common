@@ -3,7 +3,7 @@ Instructions for "https://android-build.linaro.org/builds/~linaro-android/<BUILD
 The build script doesn't support generation of flat filesytem images and we need to follow the general build instructions
 
 <pre>
-$ repo init -u http://android.git.linaro.org/git-ro/platform/manifest.git -b linaro_android_4.3 -m hisilicon-lsk.xml -g "common,hisilicon"
+$ repo init -u http://android.git.linaro.org/git-ro/platform/manifest.git -b linaro_android_4.3 -m default.xml -g "common,hisilicon"
 $ sed -i "s/linaro-landing-team-hisilicon-bot/<LAUNCHPAD-ID>/g" .repo/manifests/default.xml
 $ repo sync -j1 -f
 $ source build/envsetup.sh 
