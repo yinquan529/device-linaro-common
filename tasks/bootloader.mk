@@ -119,7 +119,7 @@ $(1) : $(2) edk2_tools FORCE_BOOTLOADER_REMAKE | $(EDK2_PREVIOUS_ROM)
 		ln -sf $$(UEFI_TOOLS_PREFIX)ld.bfd $$(notdir $$(UEFI_TOOLS_PREFIX))ld; \
 	fi && \
 	export MAKEFLAGS= && \
-	build -N -a ARM -t ARMLINUXGCC -b $(EDK2_DEB_REL) -D EDK2_OUT_DIR=$(EDK2_OUT_DIR)/$(3) $(4)
+	build -N -t ARMLINUXGCC -b $(EDK2_DEB_REL) -D EDK2_OUT_DIR=$(EDK2_OUT_DIR)/$(3) $(4)
 
 UEFI_ROM_TARGETS += $(1)
 EDK2_PREVIOUS_ROM = $(1)
@@ -158,16 +158,18 @@ endef
 #
 # Generate a rule to build an EDK2 UEFI ROM
 #
-# Usage: $(eval $(call MAKE_EDK2_ROM, platform-file, build-dir, rom-image, installed-name, dependencies))
+# Usage: $(eval $(call MAKE_EDK2_ROM, platform-file, build-dir, rom-image, installed-name, arch-type, dependencies))
 #
 # platform-file   Platform file (.dsc file). Can be abused to add trailing build commands.
 # build-dir       Directory, under $(EDK2_OUT_DIR), for build products.
 # rom-image       Rom image name (from .fdf file) converted to upper-case.
 # installed-name  Name to copy ROM to in boot directory.
-# dependencies    List of targets the rule depends on.
+# arch-type       [Optional] Target Architecture [ARM, AARCH64 ..]
+#                 Default ARCH: ARM
+# dependencies    [Optional] List of targets the rule depends on.
 #
 define MAKE_EDK2_ROM
-$(eval $(call edk2_build,$(call edk2_rom_name,$(2),$(3)),$(5),$(2),-p $(1) -r $(3)))
+$(eval $(call edk2_build,$(call edk2_rom_name,$(2),$(3)),$(6),$(2),-a $(or $(5),ARM) -p $(1) -r $(3)))
 $(eval $(call edk2_install,$(BOOTLOADER_OUT)/$(4),$(call edk2_rom_name,$(2),$(3))))
 endef
 
