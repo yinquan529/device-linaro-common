@@ -54,6 +54,10 @@ BOOTLOADER_TARGETS += $(UBOOT_FLAVOUR_TARGETS)
 # UEFI
 #
 
+ifeq ($(ANDROID_64),true)
+UEFI_TOOLS_PREFIX = $(realpath $(TOP)/gcc-linaro-aarch64-linux-gnu/bin)/aarch64-linux-android-
+endif
+
 ifeq ($(UEFI_TOOLS_PREFIX),)
 # UEFI is not an Android application and should be built with the bare
 # metal toolchain if it is available...
