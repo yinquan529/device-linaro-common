@@ -24,7 +24,6 @@ h2. Build
   $ export TARGET_BUILD_VARIANT=eng
   $ export DEBUG_NO_STRICT_ALIASING=yes
   $ export DEBUG_NO_STDCXX11=yes
-  $ export KERNEL_TOOLS_PREFIX=prebuilts/gcc/linux-x86/arm/aarch64-linux-android-linaro/bin/aarch64-linux-android-
   $ export TOOLCHAIN_TRIPLET=arm-linux-androideabi
   $ export BUILD_FS_IMAGE=1
   $ export LINARO_BUILD_SPEC=juice-aosp
@@ -53,7 +52,7 @@ If you're using a "tip" build do not skip the step and do the following:
   $ bzr branch lp:linaro-image-tools
 </pre>
 
-h2. Create binary for the ARM RTSM AEMv8 VE model
+h2. Create binary for the ARM RTSM AEMv8 VE and FVP Base AEMv8 models
 
 Run linaro image tools
 
@@ -63,16 +62,38 @@ If you're using tip of linaro image tools
 
 pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
 
-h2. Extract the axf file
+h2. Extract the axf and preboot files
 
 pre. tar -jxvf out/target/product/vexpress/boot.tar.bz2
 
-h2. Run the build
+h2. Setup the runtime environment
 
 <pre>
   $ export MODEL_PATH=/path/to/RTSM_AEMv8_VE
   $ export ARMLMD_LICENSE_FILE="8224@localhost"
   $ ssh -L 8224:localhost:8224 -L 18224:localhost:18224 -N $USER@flexlm.linaro.org
+</pre>
+
+h2. Running the models
+
+If you are running these images on FVP Base AEMv8 models then change to boot/ directory extracted above from boot.tar.bz2 and run
+
+<pre>
+  $ /path/to/FVP_Base_AEMv8A-AEMv8A/models/Linux64_GCC-4.1/FVP_Base_AEMv8A-AEMv8A \
+        -C pctl.startup=0.0.0.0 \
+        -C bp.secure_memory=0 \
+        -C cluster0.NUM_CORES=1 \
+        -C cluster1.NUM_CORES=1 \
+        -C cache_state_modelled=0 \
+        -C bp.pl011_uart0.untimed_fifos=1 \
+        -C bp.secureflashloader.fname=bl1.bin \
+        -C bp.flashloader0.fname=uefi_fvp-base.bin \
+        -C bp.virtioblockdevice.image_path=mmc.bin
+</pre>
+
+But if you are running these images on RTSM AEMv8 VE models then run
+
+<pre>
   $ model_shell64 -a $(pwd)/boot/linux-system.axf \
         $MODEL_PATH/models/Linux64_GCC-4.1/RTSM_VE_AEMv8A.so \
         -C motherboard.mmc.p_mmc_file=$(pwd)/mmc.bin \
@@ -102,12 +123,6 @@ To redirect the console open a terminal and run
 pre. telnet 127.0.0.1 5000
 
 h2. Run the Android SDK
-
-h3. Disable suspend
-
-In the model's console run
-
-pre. $ disablesuspend.sh
 
 h3. Attach ADB
 
