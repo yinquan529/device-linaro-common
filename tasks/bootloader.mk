@@ -119,7 +119,7 @@ $(1) : $(2) edk2_tools FORCE_BOOTLOADER_REMAKE | $(EDK2_PREVIOUS_ROM)
 		ln -sf $$(UEFI_TOOLS_PREFIX)ld.bfd $$(notdir $$(UEFI_TOOLS_PREFIX))ld; \
 	fi && \
 	export MAKEFLAGS= && \
-	build -N -t ARMLINUXGCC -b $(EDK2_DEB_REL) -D EDK2_OUT_DIR=$(EDK2_OUT_DIR)/$(3) $(4)
+	build -N -t ARMLINUXGCC -b $(EDK2_DEB_REL) -D EDK2_OUT_DIR=$(EDK2_OUT_DIR)/$(3) -D EDK2_USE_ANDROID_CONFIG $(4)
 
 UEFI_ROM_TARGETS += $(1)
 EDK2_PREVIOUS_ROM = $(1)
