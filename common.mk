@@ -79,6 +79,50 @@ PRODUCT_PACKAGES += \
     d8 \
     skia_bench
 
+
+PRODUCT_PACKAGES += \
+    lava-blackbox \
+    lava-gtest-wrapper \
+    lava-wrapper-finder-gtest \
+    ObjenesisTck \
+    AudioInRecord \
+    libembunit \
+    android-mock-runtimelib \
+    android-mock-generatorlib \
+    ffi-test \
+    apache-harmony-tests \
+    apache-harmony-tests-hostdex \
+    EGL_test \
+    BufferQueue_test \
+    SurfaceTexture_test \
+    gtest-death-test_test \
+    gtest-filepath_test \
+    gtest-linked_ptr_test \
+    gtest-message_test \
+    gtest-options_test \
+    gtest-port_test \
+    gtest-test-part_test \
+    gtest-typed-test2_test \
+    gtest-typed-test_test \
+    gtest_environment_test \
+    gtest_prod_test \
+    gtest_repeat_test \
+    gtest_stress_test \
+    webrtc_apm_unit_test \
+    BasicHashtable_test \
+    BlobCache_test \
+    InputChannel_test \
+    InputEvent_test \
+    InputPublisherAndConsumer_test \
+    Looper_test \
+    ObbFile_test \
+    String8_test \
+    Unicode_test \
+    Vecotr_test \
+    ZipFileRO_test \
+    keymaster_test \
+    libgui_test
+
 V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
 	$(js):data/benchmark/v8/$(notdir $(js)))
 
