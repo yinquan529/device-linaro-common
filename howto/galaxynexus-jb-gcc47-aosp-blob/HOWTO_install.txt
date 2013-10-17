@@ -20,7 +20,7 @@ or from git:
 <pre>
   $ git clone git://android.git.linaro.org/device/samsung/tuna.git
   $ cd tuna
-  $ git checkout -b linaro_android_4.1.1 origin/linaro_android_4.1.1
+  $ git checkout -b linaro_android_4.3 origin/linaro_android_4.3
 </pre>
 
 Make sure your computer is connected to the Internet, since the script downloads non-free binaries and tools to extract images.
