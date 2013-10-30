@@ -8,7 +8,7 @@ To get the build artifacts you must be part of the linaro-android-restricted lau
 
 h3. Run the build
 
-You'll need the latest ARM RTSM AEMv8 VE model and the path to this model. You'll also need a license to use this file.
+You'll need the latest ARM FVP Base models and a license to use the models. Follow the instructions at https://collaborate.linaro.org/display/ITS/FlexLM+and+Fast+Models for the same.
 
 h2. Get artifacts
 
@@ -37,7 +37,7 @@ If you're using a "tip" build do not skip the step and do the following:
   $ bzr branch lp:linaro-image-tools
 </pre>
 
-h2. Create binary for the ARM RTSM AEMv8 VE or FVP Base AEMv8 models
+h2. Create binary for the ARM FVP Base AEMv8 models
 
 Run linaro image tools
 
@@ -47,23 +47,21 @@ If you're using tip of linaro image tools
 
 pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system system.tar.bz2 --userdata userdata.tar.bz2 --boot boot.tar.bz2
 
-h2. Extract the axf and preboot files
+h2. Extract the preboot files
 
 pre. tar -jxvf boot.tar.bz2
 
 h2. Setup the runtime environment
 
 <pre>
-  $ export MODEL_PATH=/path/to/RTSM_AEMv8_VE
   $ export ARMLMD_LICENSE_FILE="8224@localhost"
   $ ssh -L 8224:localhost:8224 -L 18224:localhost:18224 -N $USER@flexlm.linaro.org &
 </pre>
 
 h2. Running the models
 
-If you are running these images on FVP Base AEMv8 models then change to boot/ directory and run
-
 <pre>
+  $ cd boot/
   $ /path/to/FVP_Base_AEMv8A-AEMv8A/models/Linux64_GCC-4.1/FVP_Base_AEMv8A-AEMv8A \
         -C pctl.startup=0.0.0.0 \
         -C bp.secure_memory=0 \
@@ -74,27 +72,6 @@ If you are running these images on FVP Base AEMv8 models then change to boot/ di
         -C bp.secureflashloader.fname=bl1.bin \
         -C bp.flashloader0.fname=uefi_fvp-base.bin \
         -C bp.virtioblockdevice.image_path=mmc.bin
-</pre>
-
-But if you are running these images on RTSM AEMv8 VE models then run
-
-<pre>
-  $ model_shell64 -a $(pwd)/boot/linux-system.axf \
-        $MODEL_PATH/models/Linux64_GCC-4.1/RTSM_VE_AEMv8A.so \
-        -C motherboard.mmc.p_mmc_file=$(pwd)/mmc.bin \
-        -C cluster.NUM_CORES=1 \
-        -C cluster.cpu0.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu0.unpredictable_non-contigous_BAS=0 \
-        -C cluster.cpu1.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu1.unpredictable_non-contigous_BAS=0 \
-        -C cluster.cpu2.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu2.unpredictable_non-contigous_BAS=0 \
-        -C cluster.cpu3.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu3.unpredictable_non-contigous_BAS=0 \
-        -C cluster.take_ccfail_undef=0 \
-        -C motherboard.hostbridge.userNetworking=true \
-        -C motherboard.hostbridge.userNetPorts="5556=6565" \
-        -C motherboard.smsc_91c111.enabled=1
 </pre>
 
 h3. Black screen
@@ -111,25 +88,7 @@ h2. Run the Android SDK
 
 h3. Attach ADB
 
-In the model's console run
-
-<pre>
-  $ stop adbd
-  $ setprop service.adb.tcp.port 6565
-  $ start adbd
-</pre>
-
-In a seperate terminal run
-
-<pre>
-  $ adb kill-server
-  $ adb connect 127.0.0.1:5556
-  $ adb wait-for-device
-</pre>
-
-You can then run
-
-pre. adb shell
+ADB on FVP Base models are supported over network. Follow the instructions here https://wiki.linaro.org/Internal/Projects/Juice/SetupNetworkingOnModelsUsingBridges to setup networking and use adb.
 
 You can also run all of the standard Android SDK tools. Learn more at "http://developer.android.com/sdk/index.html":http://developer.android.com/sdk/index.html
 
