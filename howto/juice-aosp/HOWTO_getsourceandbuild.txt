@@ -18,17 +18,14 @@ h2. Build
 
 <pre>
   $ export CPUS=`grep -c processor /proc/cpuinfo`
-
   $ export TARGET_PRODUCT=vexpress
   $ export TARGET_SIMULATOR=false
   $ export TARGET_BUILD_VARIANT=eng
   $ export DEBUG_NO_STRICT_ALIASING=yes
   $ export DEBUG_NO_STDCXX11=yes
   $ export BUILD_FS_IMAGE=1
-  $ export LINARO_BUILD_SPEC=juice-aosp
   $ export ANDROID_64=true
   $ export BIONIC_TESTS=1
-
   $ . build/envsetup.sh
   $ make -j${CPUS} boottarball systemtarball userdatatarball
 </pre>
@@ -55,15 +52,15 @@ h2. Create binary for ARM FVP Base AEMv8 models
 
 Run linaro image tools
 
-pre. $ linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
+pre. $ linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system system.tar.bz2 --userdata userdata.tar.bz2 --boot boot.tar.bz2
 
 If you're using tip of linaro image tools
 
-pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
+pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system system.tar.bz2 --userdata userdata.tar.bz2 --boot boot.tar.bz2
 
 h2. Extract the preboot files
 
-pre. tar -jxvf out/target/product/vexpress/boot.tar.bz2
+pre. tar -jxvf boot.tar.bz2
 
 h2. Setup the runtime environment
 

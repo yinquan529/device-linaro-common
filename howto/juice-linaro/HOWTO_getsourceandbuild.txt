@@ -1,4 +1,4 @@
-Instructions for "https://android-build.linaro.org/builds/~linaro-android-restricted/juice-linaro/":https://android-build.linaro.org/builds/~linaro-android-restricted/juice-linaro/
+Instructions for "https://android-build.linaro.org/builds/~linaro-android-restricted/juice-base-linaro/":https://android-build.linaro.org/builds/~linaro-android-restricted/juice-base-linaro/
 
 h2. Prerequisites
 
@@ -9,7 +9,7 @@ h2. Get the source
 <pre>
   $ curl "http://android.git.linaro.org/gitweb?p=tools/repo.git;a=blob_plain;f=repo;hb=refs/heads/stable" > repo
   $ chmod +x repo
-  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.3 -m vexpress-juice-linaro.xml -g common,juice
+  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.3.1 -m vexpress-juice-linaro.xml -g common,juice
   $ sed -i "s/linaro-big-little-switcher-bot/$USER/" .repo/manifest.xml
   $ ./repo sync # this may take some time
 </pre>
@@ -18,17 +18,12 @@ h2. Build
 
 <pre>
   $ export CPUS=`grep -c processor /proc/cpuinfo`
-
   $ export TARGET_PRODUCT=vexpress
   $ export TARGET_SIMULATOR=false
   $ export TARGET_BUILD_VARIANT=eng
-  $ export KERNEL_TOOLS_PREFIX=prebuilts/gcc/linux-x86/arm/aarch64-linux-android-linaro/bin/aarch64-linux-android-
-  $ export TARGET_TOOLS_PREFIX=prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.8-linaro/bin/arm-linux-androideabi-
-  $ export TOOLCHAIN_TRIPLET=arm-linux-androideabi
   $ export BUILD_FS_IMAGE=1
   $ export ANDROID_64=true
   $ export BIONIC_TESTS=1
-
   $ . build/envsetup.sh
   $ make -j${CPUS} boottarball systemtarball userdatatarball
 </pre>
@@ -51,42 +46,41 @@ If you're using a "tip" build do not skip the step and do the following:
   $ bzr branch lp:linaro-image-tools
 </pre>
 
-h2. Create binary for the ARM RTSM AEMv8 VE model
+h2. Create binary for ARM FVP Base AEMv8 models
 
 Run linaro image tools
 
-pre. $ linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
+pre. $ linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system system.tar.bz2 --userdata userdata.tar.bz2 --boot boot.tar.bz2
 
 If you're using tip of linaro image tools
 
-pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system out/target/product/vexpress/system.tar.bz2 --userdata out/target/product/vexpress/userdata.tar.bz2 --boot out/target/product/vexpress/boot.tar.bz2
+pre. $ ./linaro-image-tools/linaro-android-media-create --image_file mmc.bin --image_size 2000M --dev vexpress --system system.tar.bz2 --userdata userdata.tar.bz2 --boot boot.tar.bz2
 
-h2. Extract the axf file
+h2. Extract the preboot files
 
-pre. tar -jxvf out/target/product/vexpress/boot.tar.bz2
+pre. tar -jxvf boot.tar.bz2
 
-h2. Run the build
+h2. Setup the runtime environment
 
 <pre>
-  $ export MODEL_PATH=/path/to/RTSM_AEMv8_VE
   $ export ARMLMD_LICENSE_FILE="8224@localhost"
   $ ssh -L 8224:localhost:8224 -L 18224:localhost:18224 -N $USER@flexlm.linaro.org
-  $ model_shell64 -a $(pwd)/boot/linux-system.axf \
-        $MODEL_PATH/models/Linux64_GCC-4.1/RTSM_VE_AEMv8A.so \
-        -C motherboard.mmc.p_mmc_file=$(pwd)/mmc.bin \
-        -C cluster.NUM_CORES=1 \
-        -C cluster.cpu0.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu0.unpredictable_non-contigous_BAS=0 \
-        -C cluster.cpu1.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu1.unpredictable_non-contigous_BAS=0 \
-        -C cluster.cpu2.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu2.unpredictable_non-contigous_BAS=0 \
-        -C cluster.cpu3.unpredictable_WPMASKANDBAS=0 \
-        -C cluster.cpu3.unpredictable_non-contigous_BAS=0 \
-        -C cluster.take_ccfail_undef=0 \
-        -C motherboard.hostbridge.userNetworking=true \
-        -C motherboard.hostbridge.userNetPorts="5556=6565" \
-        -C motherboard.smsc_91c111.enabled=1
+</pre>
+
+h2. Running the models
+
+<pre>
+  $ cd boot
+  $ /path/to/FVP_Base_AEMv8A-AEMv8A/models/Linux64_GCC-4.1/FVP_Base_AEMv8A-AEMv8A \
+        -C pctl.startup=0.0.0.0 \
+        -C bp.secure_memory=0 \
+        -C cluster0.NUM_CORES=1 \
+        -C cluster1.NUM_CORES=1 \
+        -C cache_state_modelled=0 \
+        -C bp.pl011_uart0.untimed_fifos=1 \
+        -C bp.secureflashloader.fname=bl1.bin \
+        -C bp.flashloader0.fname=uefi_fvp-base.bin \
+        -C bp.virtioblockdevice.image_path=mmc.bin
 </pre>
 
 h3. Black screen
@@ -101,32 +95,8 @@ pre. telnet 127.0.0.1 5000
 
 h2. Run the Android SDK
 
-h3. Disable suspend
-
-In the model's console run
-
-pre. $ disablesuspend.sh
-
 h3. Attach ADB
 
-In the model's console run
-
-<pre>
-  $ stop adbd
-  $ setprop service.adb.tcp.port 6565
-  $ start adbd
-</pre>
-
-In a seperate terminal run
-
-<pre>
-  $ adb kill-server
-  $ adb connect 127.0.0.1:5556
-  $ adb wait-for-device
-</pre>
-
-You can then run
-
-pre. adb shell
+ADB on FVP Base models are supported over network. Follow the instructions here https://wiki.linaro.org/Internal/Projects/Juice/SetupNetworkingOnModelsUsingBridges to setup networking and use adb.
 
 You can also run all of the standard Android SDK tools. Learn more at "http://developer.android.com/sdk/index.html":http://developer.android.com/sdk/index.html
