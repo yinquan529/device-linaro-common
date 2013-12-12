@@ -151,7 +151,7 @@ droidcore: android_kernel_modules out_of_tree_modules
 #
 define MAKE_DEVICE_TREE
 
-$(1): $$(KERNEL_OUT)/arch/arm/boot/$(2).dtb $$(ACP)
+$(1): $$(KERNEL_OUT)/arch/$(ARCH)/boot/$(2).dtb $$(ACP)
 	@mkdir -p $$(dir $$@)
 	$$(ACP) -fpt $$< $$@
 
@@ -181,9 +181,9 @@ all_dtbs : $(INSTALLED_KERNEL_TARGET)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC) && \
 	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) $(DTB_TARGETS)
-	-mv -f $(KERNEL_OUT)/arch/arm/boot/dts/*.dtb $(KERNEL_OUT)/arch/arm/boot/
+	-mv -f $(KERNEL_OUT)/arch/$(ARCH)/boot/dts/*.dtb $(KERNEL_OUT)/arch/$(ARCH)/boot/
 
-$(patsubst %,$(KERNEL_OUT)/arch/arm/boot/%,$(DTB_TARGETS)) : all_dtbs
+$(patsubst %,$(KERNEL_OUT)/arch/$(ARCH)/boot/%,$(DTB_TARGETS)) : all_dtbs
 
 endif
 
