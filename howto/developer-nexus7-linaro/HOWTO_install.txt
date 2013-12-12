@@ -13,14 +13,14 @@ h2. Get merge-gnexus-blobs script
 
 The script is available from:
 
-"http://android.git.linaro.org/gitweb?p=device/asus/grouper.git;a=blob_plain;f=merge-nexus7-blobs;hb=linaro_android_4.4":http://android.git.linaro.org/gitweb?p=device/asus/grouper.git;a=blob_plain;f=merge-nexus7-blobs;hb=linaro_android_4.4
+"http://android.git.linaro.org/gitweb?p=device/asus/grouper.git;a=blob_plain;f=merge-nexus7-blobs;hb=linaro_android_4.4.2":http://android.git.linaro.org/gitweb?p=device/asus/grouper.git;a=blob_plain;f=merge-nexus7-blobs;hb=linaro_android_4.4.2
 
 or from git:
 
 <pre>
   $ git clone git://android.git.linaro.org/device/asus/grouper.git
   $ cd grouper
-  $ git checkout -b linaro_android_4.4 origin/linaro_android_4.4
+  $ git checkout -b linaro_android_4.4.2 origin/linaro_android_4.4.2
 </pre>
 
 Make sure your computer is connected to the Internet, since the script downloads non-free binaries and tools to extract images.
@@ -36,15 +36,15 @@ h2. Install Google Apps
 If you wish to use the phone as a real phone rather than a pure development device, chances are that you want to install the Google Apps on it:
 
 * Install the Linaro Android build as described above
-* Grab the current Google Apps zip for JellyBean from "http://goo.im/gapps":http://goo.im/gapps . At the time of the writing, the current version is: "gapps-jb-20130813-signed.zip":http://goo.im/gapps/gapps-jb-20130813-signed.zip
-* If you downloaded from a device other than your Galaxy Nexus, transfer the file to your Galaxy Nexus using: mtp-sendfile gapps-jb*.zip 8
+* Grab the current Google Apps zip for KitKat from "http://dongworkmod.org/gapps":http://dongworkmod.org/gapps . At the time of the writing, the current version is: "gapps-kk-20131119.zip":http://dongworkmod.org/gapps/gapps-kk-20131119.zip
+* If you downloaded from a device other than your Galaxy Nexus, transfer the file to your Galaxy Nexus using: mtp-sendfile gapps-kk*.zip 8
 * Turn your Galaxy Nexus off completely (remove the battery if in doubt)
 * Hold down the Volume Up and Volume Down buttons at the same time, and turn on the phone
 * Use the Volume Up button to select "Recovery mode", then press the power button to launch it. Wait for recovery to come up.
 * Select "install zip from sdcard"
 * Select "choose zip from sdcard"
-* Choose the gapps-jb zip file you downloaded earlier (it should be in the Download/ folder)
-* Select "Yes - Install gapps-jb-*-signed.zip"
+* Choose the gapps-kk zip file you downloaded earlier (it should be in the Download/ folder)
+* Select "Yes - Install gapps-kk-*.zip"
 * Select "+++++Go Back+++++"
 * Select "reboot system now"
 * Enjoy your Google Apps enabled Linaro Android build!

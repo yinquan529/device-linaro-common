@@ -50,15 +50,15 @@ h2. Install Google Apps
 
 If you wish to use the device as a real tablet rather than a pure development device, chances are that you want to install the Google Apps on it:
 * Install the Linaro Android build as described above
-* Grab the current Google Apps zip for JellyBean from "http://goo.im/gapps":http://goo.im/gapps . At the time of the writing, the current version is: "gapps-jb-20120726-signed.zip":http://goo.im/gapps/gapps-jb-20120726-signed.zip
-* If you downloaded from a device other than your Nexus 7, transfer the file to your Nexus 7 using: mtp-sendfile gapps-jb*.zip 8
+* Grab the current Google Apps zip for KitKat from "http://dongworkmod.org/gapps":http://dongworkmod.org/gapps . At the time of the writing, the current version is: "gapps-kk-20131119.zip":http://dongworkmod.org/gapps/gapps-kk-20131119.zip
+* If you downloaded from a device other than your Nexus 7, transfer the file to your Nexus 7 using: mtp-sendfile gapps-kk*.zip 8
 * Turn your Nexus 7 off completely
 * Hold down the Volume Up and Volume Down buttons at the same time, and turn on the device
 * Use the Volume Up button to select "Recovery mode", then press the power button to launch it. Wait for recovery to come up.
 * Select "install zip from sdcard"
 * Select "choose zip from sdcard"
-* Choose the gapps-jb zip file you downloaded earlier (it should be in the Download/ folder)
-* Select "Yes - Install gapps-jb-*-signed.zip"
+* Choose the gapps-kk zip file you downloaded earlier (it should be in the Download/ folder)
+* Select "Yes - Install gapps-kk-*.zip"
 * Select "+++++Go Back+++++"
 * Select "reboot system now"
 * Enjoy your Google Apps enabled Linaro Android build!

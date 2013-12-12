@@ -51,14 +51,14 @@ device, chances are that you want to install the Google Apps on it:
 
   * Install the Linaro Android build as described above
 
-  * Grab the current Google Apps zip for JellyBean from http://goo.im/gapps
+  * Grab the current Google Apps zip for KitKat from http://dongworkmod.org/gapps
     At the time of the writing, the current version is:
-    http://goo.im/gapps/gapps-jb-20120726-signed.zip
+    http://dongworkmod.org/gapps/gapps-kk-20131119.zip
 
   * If you downloaded from a device other than your Nexus 7, transfer
     the file to your Nexus 7 using:
 
-    mtp-sendfile gapps-jb*.zip 8
+    mtp-sendfile gapps-kk*.zip 8
 
   * Turn your Nexus 7 off completely
 
@@ -72,10 +72,10 @@ device, chances are that you want to install the Google Apps on it:
 
   * Select "choose zip from sdcard"
 
-  * Choose the gapps-jb zip file you downloaded earlier (it should be in the
+  * Choose the gapps-kk zip file you downloaded earlier (it should be in the
     Download/ folder)
 
-  * Select "Yes - Install gapps-jb-*-signed.zip"
+  * Select "Yes - Install gapps-kk-*.zip"
 
   * Select "+++++Go Back+++++"
 

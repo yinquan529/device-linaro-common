@@ -13,13 +13,13 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android/nexus7-
 
   The script is available from:
 
-  http://android.git.linaro.org/gitweb?p=device/asus/flo.git;a=blob_plain;f=merge-gnexus-blobs;hb=linaro_android_4.4
+  http://android.git.linaro.org/gitweb?p=device/asus/flo.git;a=blob_plain;f=merge-gnexus-blobs;hb=linaro_android_4.4.2
 
   or from git:
 
   $ git clone git://android.git.linaro.org/device/asus/flo.git
   $ cd flo
-  $ git checkout -b linaro_android_4.4 origin/linaro_android_4.4
+  $ git checkout -b linaro_android_4.4.2 origin/linaro_android_4.4.2
 
   Make sure your computer is connected to the Internet, since the script downloads non-free binaries and tools to extract images.
 
@@ -35,14 +35,14 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android/nexus7-
 
   * Install the Linaro Android build as described above
 
-  * Grab the current Google Apps zip for JellyBean from http://goo.im/gapps
+  * Grab the current Google Apps zip for KitKat from http://dongworkmod.org/gapps
     At the time of the writing, the current version is:
-    http://goo.im/gapps/gapps-jb-20130813-signed.zip
+    http://dongworkmod.org/gapps/gapps-kk-20131119.zip
 
   * If you downloaded from a device other than your Nexus 7, transfer
     the file to your Nexus 7 using:
 
-    mtp-sendfile gapps-jb*.zip 8
+    mtp-sendfile gapps-kk*.zip 8
 
   * Turn your Nexus 7 off completely
 
@@ -56,10 +56,10 @@ Instructions for https://android-build.linaro.org/builds/~linaro-android/nexus7-
 
   * Select "choose zip from sdcard"
 
-  * Choose the gapps-jb zip file you downloaded earlier (it should be in the
+  * Choose the gapps-kk zip file you downloaded earlier (it should be in the
     Download/ folder)
 
-  * Select "Yes - Install gapps-jb-*-signed.zip"
+  * Select "Yes - Install gapps-kk-*.zip"
 
   * Select "+++++Go Back+++++"
 
