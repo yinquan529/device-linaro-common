@@ -27,19 +27,19 @@ Make sure your computer is connected to the Internet, since the script downloads
 
 Run merge-nexus7-blobs script, giving the directory containing the .img files as its sole argument.
 
-The script will do the remaining bits for you, including flashing the phone.
+The script will do the remaining bits for you, including flashing the tablet.
 
-*WARNING* There is no guarantee whatsoever that the build will work. If it breaks your phone, you get to keep both pieces.
+*WARNING* There is no guarantee whatsoever that the build will work. If it breaks your tablet, you get to keep both pieces.
 
 h2. Install Google Apps
 
-If you wish to use the phone as a real phone rather than a pure development device, chances are that you want to install the Google Apps on it:
+If you wish to use the tablet as a real tablet rather than a pure development device, chances are that you want to install the Google Apps on it:
 
 * Install the Linaro Android build as described above
 * Grab the current Google Apps zip for KitKat from "http://dongworkmod.org/gapps":http://dongworkmod.org/gapps . At the time of the writing, the current version is: "gapps-kk-20131119.zip":http://dongworkmod.org/gapps/gapps-kk-20131119.zip
 * If you downloaded from a device other than your Galaxy Nexus, transfer the file to your Galaxy Nexus using: mtp-sendfile gapps-kk*.zip 8
 * Turn your Galaxy Nexus off completely (remove the battery if in doubt)
-* Hold down the Volume Up and Volume Down buttons at the same time, and turn on the phone
+* Hold down the Volume Down buttons while turning on the tablet
 * Use the Volume Up button to select "Recovery mode", then press the power button to launch it. Wait for recovery to come up.
 * Select "install zip from sdcard"
 * Select "choose zip from sdcard"
