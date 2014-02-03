@@ -2,14 +2,23 @@ Instructions for "https://android-build.linaro.org/builds/~linaro-android-restri
 
 h2. Prerequisites
 
-To get the components you need to make a build you must be able to ssh to git.linaro.org and be part of the big-little-switcher-private group. Contact "Philip Colmer" <philip.colmer@linaro.org> for access requests.
+To clone the sources you must be able to ssh to git.linaro.org and be part of the big-little-switcher-private group. Contact "Philip Colmer" <philip.colmer@linaro.org> for access requests.
+
+Install build dependencies on Ubuntu:
+<pre>
+  $ sudo add-apt-repository ppa:linaro-maintainers/tools
+  $ sudo apt-get update
+  $ sudo apt-get install gnupg flex bison gperf build-essential zip curl zlib1g-dev libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev g++-multilib mingw32 tofrodos python-markdown libxml2-utils xsltproc uboot-mkimage openjdk-6-jdk openjdk-6-jre vim-common python-parted python-yaml wget uuid-dev iasl
+</pre>
+
+You can also download linaro android build script(linaro_android_build_cmds.sh) from Downloads section at https://android-build.linaro.org/builds/~linaro-android-restricted/juice-base-aosp to do a complete Juice build from scratch.
 
 h2. Get the source
 
 <pre>
   $ curl "http://android.git.linaro.org/gitweb?p=tools/repo.git;a=blob_plain;f=repo;hb=refs/heads/stable" > repo
   $ chmod +x repo
-  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.3.1 -m vexpress-juice-aosp.xml
+  $ ./repo init -u ssh://$USER@linaro-private.git.linaro.org/srv/linaro-private.git.linaro.org/android/manifest.git -b linaro_android_4.4.2_juice -m vexpress-juice-aosp.xml
   $ sed -i "s/linaro-big-little-switcher-bot/$USER/" .repo/manifest.xml
   $ ./repo sync # this may take some time
 </pre>
@@ -32,21 +41,13 @@ h2. Build
 
 h2. Get linaro image tools
 
-Run these commands to get all the dependencies for linaro-image-tools and the tip of linaro-image-tools
-
+Run these commands to get all the dependencies for linaro-image-tools
 <pre>
   $ sudo add-apt-repository ppa:linaro-maintainers/tools
   $ sudo apt-get update
   $ sudo apt-get install linaro-image-tools
 </pre>
-
-If you're using a released build (with a -release or from releases.linaro.org), skip this step.
-If you're using a "tip" build do not skip the step and do the following:
-
-<pre>
-  $ sudo apt-get install bzr
-  $ bzr branch lp:linaro-image-tools
-</pre>
+If you're using a "tip" build then we suggest you use the tip of linaro-image-tools from http://git.linaro.org/infrastructure/linaro-image-tools.git
 
 h2. Create binary for ARM FVP Base AEMv8 models
 
