@@ -1,0 +1,64 @@
+Instructions for https://android-build.linaro.org/builds/~linaro-android-community/nexus10-linaro/
+
+= Get artifacts =
+
+  Scroll down to the 'Downloads' section
+
+  Click on each link to download:
+    boot.img
+    system.img
+    userdata.img
+
+= Get merge-nexus10-blobs script =
+
+  The script is available from git:
+
+  $ git clone git://android.git.linaro.org/device/samsung/manta.git
+  $ cd manta
+  $ git checkout -b linaro_android_4.4.2 origin/linaro_android_4.4.2
+
+  Make sure your computer is connected to the Internet, since the script downloads non-free binaries and tools to extract images.
+
+  Run the merge-nexus10-blobs script, giving the directory containing the .img files as its sole argument.
+
+  The script will do the remaining bits for you, including flashing the device.
+
+  WARNING: There is no guarantee whatsoever that the build will work. If it breaks your device, you get to keep both pieces.
+
+= Install Google Apps =
+
+  If you wish to use the device as a real tablet rather than a pure development device, chances are that you want to install the Google Apps on it:
+
+  * Install the Linaro Android build as described above
+
+  * Grab the current Google Apps zip for KitKat from http://wiki.cyanogenmod.org/w/Google_Apps
+    At the time of the writing, the current version is:
+    http://itvends.com/gapps/gapps-kk-20140105-signed.zip
+
+  * If you downloaded from a device other than your Nexus 10, transfer
+    the file to your Nexus 10 using:
+
+    mtp-sendfile gapps-kk*.zip 8
+
+  * Turn your Nexus 10 off completely
+
+  * Hold down the Volume Up and Volume Down buttons at the same time, and turn
+    on the tablet
+
+  * Use the Volume Up button to select "Recovery mode", then press the power
+    button to launch it. Wait for recovery to come up.
+
+  * Select "install zip from sdcard"
+
+  * Select "choose zip from sdcard"
+
+  * Choose the gapps-kk zip file you downloaded earlier (it should be in the
+    Download/ folder)
+
+  * Select "Yes - Install gapps-kk-*.zip"
+
+  * Select "+++++Go Back+++++"
+
+  * Select "reboot system now"
+
+  * Enjoy your Google Apps enabled Linaro Android build!
