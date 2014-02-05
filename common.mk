@@ -70,7 +70,8 @@ PRODUCT_PACKAGES := \
     sysbench \
     bctest \
     idlestat \
-    nfacct
+    nfacct \
+    iontest
 
 #packages we are using for benchmarking
 # d8 replaces v8shell -- we're leaving both packages in here for now so
