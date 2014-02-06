@@ -71,7 +71,8 @@ PRODUCT_PACKAGES := \
     bctest \
     idlestat \
     nfacct \
-    iontest
+    iontest \
+    ion-unit-tests
 
 #packages we are using for benchmarking
 # d8 replaces v8shell -- we're leaving both packages in here for now so
