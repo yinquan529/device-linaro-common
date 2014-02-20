@@ -2,7 +2,7 @@ ifneq ($(strip $(SHOW_COMMANDS)),)
 KERNEL_VERBOSE="V=1"
 endif
 
-KERNEL_TOOLS_PREFIX ?= $(shell sh -c "cd $(TOP); cd `dirname $(TARGET_TOOLS_PREFIX)`; pwd")/$(shell basename $(TARGET_TOOLS_PREFIX))
+KERNEL_TOOLS_PREFIX ?= $(TARGET_TOOLS_PREFIX)
 
 # Get an absolute pathname for $(TARGET_TOOLS_PREFIX) - perf needs to be
 # built with TARGET_TOOLS (not KERNEL_TOOLS because we may be building a
@@ -66,20 +66,21 @@ android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	echo building kernel $(KERNEL_TARGET) with config $(KERNEL_CONFIG) for bootloader $(TARGET_BOOTLOADER_TYPE)
 	mkdir -p $(KERNEL_OUT)
 	cd $(KERNEL_SRC) &&\
+	if [ "`echo $(KERNEL_TOOLS_PREFIX) |cut -b1`" = "/" ]; then KTP="$(KERNEL_TOOLS_PREFIX)"; else KTP="$(REALTOP)/$(KERNEL_TOOLS_PREFIX)"; fi ; \
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) && \
-	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
+	if [ -e "$${KTP}ld.bfd" ]; then LD="$${KTP}ld.bfd"; else LD="$${KTP}ld"; fi && \
 	if [ $(words $(KERNEL_CONFIG)) -gt 1 ]; \
 	then scripts/kconfig/merge_config.sh -m $(KERNEL_CONFIG) && mv -f .config $(KERNEL_OUT)/.merged.config && $(MAKE) -j1 $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) KCONFIG_ALLCONFIG=$(KERNEL_OUT)/.merged.config alldefconfig; \
-	else $(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD defconfig $(KERNEL_CONFIG); \
+	else $(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" LD="$${LD}" defconfig $(KERNEL_CONFIG); \
 	fi && \
-	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD $(KERNEL_TARGET)
+	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD="$${LD}" $(KERNEL_TARGET)
 ifeq ($(INCLUDE_PERF),1)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC)/tools/perf &&\
 	mkdir -p $(KERNEL_OUT)/tools/perf &&\
 	mkdir -p $(REALTOP)/$(PRODUCT_OUT)/system/bin/ &&\
-	if [ -e $(ABS_TARGET_TOOLS_PREFIX)ld.bfd ]; then LD=$(ABS_TARGET_TOOLS_PREFIX)ld.bfd; else LD=$(ABS_TARGET_TOOLS_PREFIX)ld; fi && \
-	$(MAKE) ANDROID_CFLAGS="$(TARGET_EXTRA_CFLAGS) $(LOCAL_CFLAGS) -isystem $(REALTOP)/bionic/libc/include -isystem $(REALTOP)/bionic/libc/kernel/common -isystem $(REALTOP)/bionic/libc/kernel/arch-arm -isystem $(REALTOP)/bionic/libc/arch-arm/include -I$(REALTOP)/external/elfutils/libelf -isystem $(REALTOP)/bionic/libm/include -isystem $(shell dirname $(ABS_TARGET_TOOLS_PREFIX))/../include -I$(KERNEL_OUT)/tools/perf" BASIC_LDFLAGS="-nostdlib -Wl,-dynamic-linker,/system/bin/linker,-z,muldefs$(shell if test $(PLATFORM_SDK_VERSION) -lt 16; then echo -ne ',-T$(REALTOP)/$(BUILD_SYSTEM)/armelf.x'; fi),-z,nocopyreloc,--no-undefined -L$(REALTOP)/$(TARGET_OUT_STATIC_LIBRARIES) -L$(REALTOP)/$(PRODUCT_OUT)/system/lib -L$(REALTOP)/external/elfutils -L$(realpath $(PRODUCT_OUT))/obj/STATIC_LIBRARIES/libelf_intermediates -lpthread -lelf -lm -lc $(REALTOP)/$(TARGET_CRTBEGIN_DYNAMIC_O) $(REALTOP)/$(TARGET_CRTEND_O)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT)/tools/perf/ OUTPUT=$(KERNEL_OUT)/tools/perf/ ARCH=$(ARCH) CROSS_COMPILE=$(ABS_TARGET_TOOLS_PREFIX) LD=$$LD prefix=/system NO_DWARF=1 NO_NEWT=1 NO_LIBPERL=1 NO_LIBPYTHON=1 NO_GTK2=1 NO_STRLCPY=1 WERROR=0 && \
+	if [ -e "$(ABS_TARGET_TOOLS_PREFIX)ld.bfd" ]; then LD="$(ABS_TARGET_TOOLS_PREFIX)ld.bfd"; else LD="$(ABS_TARGET_TOOLS_PREFIX)ld"; fi && \
+	$(MAKE) ANDROID_CFLAGS="$(TARGET_EXTRA_CFLAGS) $(LOCAL_CFLAGS) -isystem $(REALTOP)/bionic/libc/include -isystem $(REALTOP)/bionic/libc/kernel/common -isystem $(REALTOP)/bionic/libc/kernel/arch-arm -isystem $(REALTOP)/bionic/libc/arch-arm/include -I$(REALTOP)/external/elfutils/libelf -isystem $(REALTOP)/bionic/libm/include -isystem $(shell dirname $(ABS_TARGET_TOOLS_PREFIX))/../include -I$(KERNEL_OUT)/tools/perf" BASIC_LDFLAGS="-nostdlib -Wl,-dynamic-linker,/system/bin/linker,-z,muldefs$(shell if test $(PLATFORM_SDK_VERSION) -lt 16; then echo -ne ',-T$(REALTOP)/$(BUILD_SYSTEM)/armelf.x'; fi),-z,nocopyreloc,--no-undefined -L$(REALTOP)/$(TARGET_OUT_STATIC_LIBRARIES) -L$(REALTOP)/$(PRODUCT_OUT)/system/lib -L$(REALTOP)/external/elfutils -L$(realpath $(PRODUCT_OUT))/obj/STATIC_LIBRARIES/libelf_intermediates -lpthread -lelf -lm -lc $(REALTOP)/$(TARGET_CRTBEGIN_DYNAMIC_O) $(REALTOP)/$(TARGET_CRTEND_O)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT)/tools/perf/ OUTPUT=$(KERNEL_OUT)/tools/perf/ ARCH=$(ARCH) CROSS_COMPILE="$(ABS_TARGET_TOOLS_PREFIX)" LD="$${LD}" prefix=/system NO_DWARF=1 NO_NEWT=1 NO_LIBPERL=1 NO_LIBPYTHON=1 NO_GTK2=1 NO_STRLCPY=1 WERROR=0 && \
 	cp -f $(KERNEL_OUT)/tools/perf/perf $(REALTOP)/$(PRODUCT_OUT)/system/bin/
 endif
 
@@ -87,12 +88,14 @@ ifneq ($(BUILD_KERNEL_MODULES),false)
 android_kernel_modules: $(INSTALLED_KERNEL_TARGET) $(ACP)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC) &&\
-	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
-	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" modules
+	if [ "`echo $(KERNEL_TOOLS_PREFIX) |cut -b1`" = "/" ]; then KTP="$(KERNEL_TOOLS_PREFIX)"; else KTP="$(REALTOP)/$(KERNEL_TOOLS_PREFIX)"; fi ; \
+	if [ -e $${KTP}ld.bfd ]; then LD=$${KTP}ld.bfd; else LD=$${KTP}ld; fi && \
+	$(MAKE) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" LD="$${LD}" EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" modules
 	mkdir -p $(KERNEL_OUT)/modules_for_android
 	cd $(KERNEL_SRC) &&\
-	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
-	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD=$$LD modules_install INSTALL_MOD_PATH=$(KERNEL_OUT)/modules_for_android
+	if [ `echo $(KERNEL_TOOLS_PREFIX) |cut -b1` = "/" ]; then KTP="$(KERNEL_TOOLS_PREFIX)"; else KTP="$(REALTOP)/$(KERNEL_TOOLS_PREFIX)"; fi ; \
+	if [ -e $${KTP}ld.bfd ]; then LD=$${KTP}ld.bfd; else LD=$${KTP}ld; fi && \
+	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD="$${LD}" modules_install INSTALL_MOD_PATH=$(KERNEL_OUT)/modules_for_android
 	mkdir -p $(TARGET_MODULES_OUT)/modules
 	find $(KERNEL_OUT)/modules_for_android -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_MODULES_OUT)/modules/ \;
 else
