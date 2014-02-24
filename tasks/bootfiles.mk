@@ -67,6 +67,11 @@ endif
 ifeq ($(TARGET_BOARD_PLATFORM),arndale)
 	cp -r $(TOP)/device/linaro/arndale/arndale-bl1.bin $(PRODUCT_OUT)/boot
 endif
+ifeq ($(TARGET_BOARD_PLATFORM),arndale_octa)
+	cp -r $(TOP)/device/linaro/arndale_octa/arndale-octa.bl1.bin $(PRODUCT_OUT)/boot
+	cp -r $(TOP)/device/linaro/arndale_octa/arndale-octa.tzsw.bin $(PRODUCT_OUT)/boot
+	cp -r $(TOP)/device/linaro/arndale_octa/smdk5420-spl.signed.bin $(PRODUCT_OUT)/boot
+endif
 ifeq ($(ANDROID_64),true)
 	cp -r $(TOP)/fvp-pre-boot/*.bin $(PRODUCT_OUT)/boot
 endif
