@@ -120,8 +120,9 @@ ifneq ($(realpath $(TOP)/external/gator/driver),)
 gator_driver: android_kernel_modules $(INSTALLED_KERNEL_TARGET) $(ACP)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(TOP)/external/gator/driver &&\
-	if [ -e $(KERNEL_TOOLS_PREFIX)ld.bfd ]; then LD=$(KERNEL_TOOLS_PREFIX)ld.bfd; else LD=$(KERNEL_TOOLS_PREFIX)ld; fi && \
-	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic $(GATOR_EXTRA_CFLAGS)" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(GATOR_EXTRA_MAKE_ARGS) -C $(KERNEL_PATH) M=`pwd` modules
+	if [ `echo $(KERNEL_TOOLS_PREFIX) |cut -b1` = "/" ]; then KTP="$(KERNEL_TOOLS_PREFIX)"; else KTP="$(REALTOP)/$(KERNEL_TOOLS_PREFIX)"; fi ; \
+	if [ -e $${KTP}ld.bfd ]; then LD=$${KTP}ld.bfd; else LD=$${KTP}ld; fi && \
+	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" LD=$$LD EXTRA_CFLAGS="$(EXTRA_CFLAGS) -fno-pic $(GATOR_EXTRA_CFLAGS)" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(GATOR_EXTRA_MAKE_ARGS) -C $(KERNEL_PATH) M=`pwd` modules
 	mkdir -p $(TARGET_MODULES_OUT)/modules
 	find $(TOP)/external/gator/driver/. -name "*.ko" -exec $(ACP) -fpt {} $(TARGET_MODULES_OUT)/modules/ \;
 else
@@ -183,7 +184,9 @@ ifneq ($(strip $(DTB_TARGETS)),)
 all_dtbs : $(INSTALLED_KERNEL_TARGET)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC) && \
-	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE=$(KERNEL_TOOLS_PREFIX) $(DTB_TARGETS)
+	if [ `echo $(KERNEL_TOOLS_PREFIX) |cut -b1` = "/" ]; then KTP="$(KERNEL_TOOLS_PREFIX)"; else KTP="$(REALTOP)/$(KERNEL_TOOLS_PREFIX)"; fi ; \
+	if [ -e $${KTP}ld.bfd ]; then LD=$${KTP}ld.bfd; else LD=$${KTP}ld; fi && \
+	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" $(DTB_TARGETS)
 	-mv -f $(KERNEL_OUT)/arch/$(ARCH)/boot/dts/*.dtb $(KERNEL_OUT)/arch/$(ARCH)/boot/
 
 $(patsubst %,$(KERNEL_OUT)/arch/$(ARCH)/boot/%,$(DTB_TARGETS)) : all_dtbs
