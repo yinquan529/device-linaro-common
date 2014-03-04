@@ -62,6 +62,12 @@ LOCAL_CFLAGS=$(call cc-option,"-mno-unaligned-access", )
 KERNEL_COMPILER_PATHS := ../$(BUILD_OUT_EXECUTABLES)
 endif
 
+ifneq ($(KERNEL_LOADADDR),)
+	KLDR := "LOADADDR=$(KERNEL_LOADADDR)" 
+else
+	KLDR :=
+endif
+
 android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	echo building kernel $(KERNEL_TARGET) with config $(KERNEL_CONFIG) for bootloader $(TARGET_BOOTLOADER_TYPE)
 	mkdir -p $(KERNEL_OUT)
@@ -73,7 +79,8 @@ android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	then scripts/kconfig/merge_config.sh -m $(KERNEL_CONFIG) && mv -f .config $(KERNEL_OUT)/.merged.config && $(MAKE) -j1 $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) KCONFIG_ALLCONFIG=$(KERNEL_OUT)/.merged.config alldefconfig; \
 	else $(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" LD="$${LD}" defconfig $(KERNEL_CONFIG); \
 	fi && \
-	$(MAKE) LOADADDR=$(KERNEL_LOADADDR) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD="$${LD}" $(KERNEL_TARGET)
+	$(MAKE) $(KLDR) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD="$${LD}" $(KERNEL_TARGET)
+
 ifeq ($(INCLUDE_PERF),1)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
 	cd $(KERNEL_SRC)/tools/perf &&\
