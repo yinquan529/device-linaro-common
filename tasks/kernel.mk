@@ -264,8 +264,13 @@ $(PRIVATE_SYSTEM_TAR): download_prebuilt_system_image
 	cd $(PREBUILT_IMAGES_DIR)  &&\
 	bunzip2 --keep system.tar.bz2 &&\
 	mv system.tar $(REAL_OUT)/
-COMBINED_SYSTEMTARBALL_TARGET : $(PRIVATE_SYSTEM_TAR) $(FS_GET_STATS) kernel_files gatord
+
+COMBINED_SYSTEMTARBALL_TARGET : $(PRIVATE_SYSTEM_TAR) $(FS_GET_STATS) kernel_files
 	$(update-systemtarball)
+
+ifneq ($(wildcard $(KERNEL_SRC)/tools/gator/),)
+COMBINED_SYSTEMTARBALL_TARGET : gatord
+endif
 
 COMBINED_USERDATATARBALL_TARGET : download_prebuilt_userdata_image
 	cp -uvf $(PREBUILT_IMAGES_DIR)/userdata.tar.bz2 $(REAL_OUT)/
