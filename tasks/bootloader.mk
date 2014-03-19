@@ -55,7 +55,7 @@ BOOTLOADER_TARGETS += $(UBOOT_FLAVOUR_TARGETS)
 #
 
 ifeq ($(ANDROID_64),true)
-UEFI_TOOLS_PREFIX = $(realpath $(TOP)/gcc-linaro-aarch64-linux-gnu/bin)/aarch64-linux-android-
+UEFI_TOOLS_PREFIX ?= $(realpath $(TOP)/gcc-linaro-aarch64-linux-gnu/bin)/aarch64-linux-android-
 endif
 
 ifeq ($(UEFI_TOOLS_PREFIX),)
