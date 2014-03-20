@@ -73,7 +73,8 @@ PRODUCT_PACKAGES := \
     nfacct \
     iontest \
     ion-unit-tests \
-    sshd
+    sshd \
+    ssh-keygen
 
 #packages we are using for benchmarking
 # d8 replaces v8shell -- we're leaving both packages in here for now so
