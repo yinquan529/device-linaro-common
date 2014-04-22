@@ -1,3 +1,4 @@
+ifeq ($(strip $(TARGET_PREBUILT_KERNEL)),)
 ifneq ($(strip $(SHOW_COMMANDS)),)
 KERNEL_VERBOSE="V=1"
 endif
@@ -290,3 +291,4 @@ combine_kernel_prebuilt :
 	$(error ANDROID_PREBUILT_URL need to be set for using this combine_kernel_prebuilt target.)
 
 endif
+endif # TARGET_PREBUILT_KERNEL
