@@ -93,6 +93,26 @@ $(PRODUCT_OUT)/MLO: android_uboot
 endif
 endif
 
+
+ifeq ($(TARGET_PRODUCT),full_jacinto6evm))
+ifeq ($(USE_PREBUILT_UBOOT), true)
+$(PRODUCT_OUT)/u-boot.bin:
+	ln -sf ../../../../device/linaro/jacinto6evm/u-boot.bin $(PRODUCT_OUT)/u-boot.bin
+$(PRODUCT_OUT)/u-boot.img:
+	ln -sf ../../../../device/linaro/jacinto6evm/u-boot.bin $(PRODUCT_OUT)/u-boot.img
+
+$(PRODUCT_OUT)/MLO:
+	ln -sf ../../../../device/linaro/jacinto6evm/MLO $(PRODUCT_OUT)/MLO
+else
+$(PRODUCT_OUT)/u-boot.img: android_uboot
+	ln -sf obj/u-boot/u-boot.img $(PRODUCT_OUT)/u-boot.img
+
+$(PRODUCT_OUT)/MLO: android_uboot
+	ln -sf obj/u-boot/MLO $(PRODUCT_OUT)/MLO
+endif
+endif
+
+
 ifeq ($(TARGET_PRODUCT), full_panda)
 ifeq ($(USE_PREBUILT_UBOOT), true)
 $(PRODUCT_OUT)/u-boot.bin:

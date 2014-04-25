@@ -75,6 +75,10 @@ endif
 ifeq ($(ANDROID_64),true)
 	cp -r $(TOP)/fvp-pre-boot/*.bin $(PRODUCT_OUT)/boot
 endif
+ifeq ($(TARGET_PRODUCT),full_jacinto6evm)
+	cp -r $(PRODUCT_OUT)/obj/u-boot/MLO $(PRODUCT_OUT)/boot
+	cp -r $(PRODUCT_OUT)/obj/u-boot/u-boot.img $(PRODUCT_OUT)/boot
+endif
 
 $(INSTALLED_BOOTTARBALL_TARGET): copybootfiles
 
