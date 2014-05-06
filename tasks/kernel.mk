@@ -81,6 +81,9 @@ android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	else $(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" LD="$${LD}" defconfig $(KERNEL_CONFIG); \
 	fi && \
 	$(MAKE) $(KLDR) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD="$${LD}" $(KERNEL_TARGET)
+ifeq ($(TARGET_PRODUCT),full_jacinto6evm)
+	tar -cf $(PRODUCT_OUT)/dtb.tar.bz2 $(KERNEL_OUT)/arch/$(ARCH)/boot/*.dtb
+endif
 
 ifeq ($(INCLUDE_PERF),1)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
