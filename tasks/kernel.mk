@@ -81,9 +81,6 @@ android_kernel: $(BOOTLOADER_DEP) $(PERF_DEP)
 	else $(MAKE) -j1 KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" LD="$${LD}" defconfig $(KERNEL_CONFIG); \
 	fi && \
 	$(MAKE) $(KLDR) $(KERNEL_VERBOSE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" KCFLAGS="$(TARGET_EXTRA_CFLAGS) -fno-pic $(LOCAL_CFLAGS)" LD="$${LD}" $(KERNEL_TARGET)
-ifeq ($(TARGET_PRODUCT),full_jacinto6evm)
-	tar -cf $(PRODUCT_OUT)/dtb.tar.bz2 $(KERNEL_OUT)/arch/$(ARCH)/boot/*.dtb
-endif
 
 ifeq ($(INCLUDE_PERF),1)
 	export PATH=$(KERNEL_COMPILER_PATHS):$(PATH) &&\
@@ -200,6 +197,9 @@ all_dtbs : $(INSTALLED_KERNEL_TARGET)
 	$(MAKE) O=$(KERNEL_OUT) ARCH=$(ARCH) CROSS_COMPILE="$${KTP}" $(DTB_TARGETS)
 	-mv -f $(KERNEL_OUT)/arch/$(ARCH)/boot/dts/*.dtb $(KERNEL_OUT)/arch/$(ARCH)/boot/
 
+ifeq ($(TARGET_PRODUCT), full_jacinto6evm)
+	tar -cf $(PRODUCT_OUT)/dtb.tar.bz2 $(KERNEL_OUT)/arch/$(ARCH)/boot/*.dtb
+endif
 $(patsubst %,$(KERNEL_OUT)/arch/$(ARCH)/boot/%,$(DTB_TARGETS)) : all_dtbs
 
 endif
@@ -210,6 +210,9 @@ $(INSTALLED_DTB_TARGET): $(DTB_INSTALL_TARGETS)
 
 ifeq ($(TARGET_PRODUCT), vexpress_rtsm)
 bootwrapper: $(DTB_INSTALL_TARGETS)
+endif
+ifeq ($(TARGET_PRODUCT), full_jacinto6evm)
+droidcore: $(DTB_INSTALL_TARGETS)
 endif
 
 kernel_files : $(INSTALLED_KERNEL_TARGET) $(DTB_INSTALL_TARGETS) android_kernel_modules
