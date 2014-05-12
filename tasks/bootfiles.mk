@@ -72,9 +72,6 @@ ifeq ($(TARGET_BOARD_PLATFORM),arndale_octa)
 	cp -r $(TOP)/device/linaro/arndale_octa/arndale-octa.tzsw.bin $(PRODUCT_OUT)/boot
 	cp -r $(TOP)/device/linaro/arndale_octa/smdk5420-spl.signed.bin $(PRODUCT_OUT)/boot
 endif
-ifeq ($(ANDROID_64),true)
-	cp -r $(TOP)/fvp-pre-boot/*.bin $(PRODUCT_OUT)/boot
-endif
 ifeq ($(TARGET_PRODUCT),full_jacinto6evm)
 	cp -r $(PRODUCT_OUT)/obj/u-boot/MLO $(PRODUCT_OUT)/boot
 	cp -r $(PRODUCT_OUT)/obj/u-boot/u-boot.img $(PRODUCT_OUT)/boot
