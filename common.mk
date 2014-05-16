@@ -1,5 +1,5 @@
 # stuff common to all Linaro LEB
-include $(LOCAL_PATH)/ZeroXBenchmark.mk
+include $(LOCAL_PATH)/extra-and-tests//ZeroXBenchmark.mk
 
 ifneq ($(wildcard $(TOP)/packages/apps/AndroidTerm/Android.mk),)
 # Include AndroidTerm only if it's part of the manifest
@@ -36,13 +36,11 @@ PRODUCT_PACKAGES := \
     CalendarProvider \
     SyncProvider \
     faketsd \
-    ZeroXBenchmark \
     hwcomposer.default \
     libmicro \
     powertop \
     powerdebug \
     mmtest \
-    $(ZEROXBENCHMARK_NATIVE_APPS) \
     GLMark2 \
     libglmark2-android \
     gatord \
