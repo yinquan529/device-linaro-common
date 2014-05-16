@@ -79,3 +79,7 @@ endif
 
 $(INSTALLED_BOOTTARBALL_TARGET): copybootfiles
 
+ifneq (,$(strip $(PRE_BOOT_FILES)))
+PRE_BOOT_FILES :=  $(addprefix $(PRODUCT_OUT)/boot/, $(PRE_BOOT_FILES))
+$(INSTALLED_BOOTTARBALL_TARGET): $(PRE_BOOT_FILES)
+endif
