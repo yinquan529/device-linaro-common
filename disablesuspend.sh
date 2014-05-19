@@ -43,4 +43,7 @@ else
     wait_home_screen || exit 1
 fi
 
-disable_suspend
+hardware=`getprop "ro.hardware" | grep "juno"`
+if [ "x$hardware" != "xjuno" ] ; then
+    disable_suspend
+fi
