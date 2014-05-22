@@ -1,6 +1,3 @@
-# stuff common to all Linaro LEB
-include $(LOCAL_PATH)/extra-and-tests//ZeroXBenchmark.mk
-
 ifneq ($(wildcard $(TOP)/packages/apps/AndroidTerm/Android.mk),)
 # Include AndroidTerm only if it's part of the manifest
 ANDROIDTERM := AndroidTerm libjackpal-androidterm4
@@ -125,6 +122,10 @@ PRODUCT_PACKAGES += \
     ZipFileRO_test \
     keymaster_test \
     libgui_test
+
+# stuff common to all Linaro LEB
+include $(LOCAL_PATH)/extra-and-tests//ZeroXBenchmark.mk
+
 
 V8BENCHMARKS := $(foreach js,$(wildcard $(TOP)/external/v8/benchmarks/*.js),\
 	$(js):data/benchmark/v8/$(notdir $(js)))
