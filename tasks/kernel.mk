@@ -3,13 +3,13 @@ ifneq ($(strip $(SHOW_COMMANDS)),)
 KERNEL_VERBOSE="V=1"
 endif
 
-KERNEL_TOOLS_PREFIX ?= $(TARGET_TOOLS_PREFIX)
-
 # Get an absolute pathname for $(TARGET_TOOLS_PREFIX) - perf needs to be
 # built with TARGET_TOOLS (not KERNEL_TOOLS because we may be building a
 # 64/32 environment), but is not built from the regular top directory,
 # so passing a relative TARGET_TOOLS_PREFIX won't work.
 ABS_TARGET_TOOLS_PREFIX = $(shell cd `dirname $(TARGET_TOOLS_PREFIX)` && pwd)/$(shell basename $(TARGET_TOOLS_PREFIX))
+
+KERNEL_TOOLS_PREFIX ?= $(ABS_TARGET_TOOLS_PREFIX)
 
 REALTOP=$(realpath $(TOP))
 
