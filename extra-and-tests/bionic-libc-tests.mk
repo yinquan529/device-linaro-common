@@ -71,5 +71,7 @@ BIONIC_LIBC_NATIVE_TEST := \
 
 PRODUCT_COPY_FILES += $(COMMON_EXTRA_TESTS_DIR)/run-bionic-tests.sh:system/bin/run-bionic-tests.sh
 
+BIONIC_TESTS := true
+
 PRODUCT_PACKAGES += \
     $(BIONIC_LIBC_NATIVE_TEST) \
