@@ -198,7 +198,7 @@ all_dtbs : $(INSTALLED_KERNEL_TARGET)
 	-mv -f $(KERNEL_OUT)/arch/$(ARCH)/boot/dts/*.dtb $(KERNEL_OUT)/arch/$(ARCH)/boot/
 
 ifeq ($(TARGET_PRODUCT), full_jacinto6evm)
-	tar -cf $(PRODUCT_OUT)/dtb.tar.bz2 $(KERNEL_OUT)/arch/$(ARCH)/boot/*.dtb
+	cp $(KERNEL_OUT)/arch/$(ARCH)/boot/*.dtb $(PRODUCT_OUT)/dtb.img
 endif
 $(patsubst %,$(KERNEL_OUT)/arch/$(ARCH)/boot/%,$(DTB_TARGETS)) : all_dtbs
 
