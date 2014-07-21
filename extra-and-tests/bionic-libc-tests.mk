@@ -38,7 +38,6 @@ BIONIC_LIBC_NATIVE_TEST := \
     libtest_relocs \
     libtest_static_init \
     test_aligned \
-    test_arc4random \
     test_clock \
     test_cpu_set \
     test_dlclose_destruction \
@@ -66,8 +65,7 @@ BIONIC_LIBC_NATIVE_TEST := \
     test_static_executable_destructor \
     test_static_init \
     test_sysconf \
-    test_udp \
-    test_vfprintf_leak
+    test_udp
 
 PRODUCT_COPY_FILES += $(COMMON_EXTRA_TESTS_DIR)/run-bionic-tests.sh:system/bin/run-bionic-tests.sh
 
