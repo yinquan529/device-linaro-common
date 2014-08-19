@@ -1,0 +1,2 @@
+allow init_shell zygote_exec:file rx_file_perms;
+allow init_shell dalvikcache_data_file:file rw_file_perms;

@@ -1,1 +1,2 @@
 allow netd usermodehelper:file r_file_perms;
+allow netd debug_prop:property_service set;

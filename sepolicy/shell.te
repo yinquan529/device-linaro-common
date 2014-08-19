@@ -1,1 +1,15 @@
 allow shell serial_device:chr_file rw_file_perms;
+
+# hack for running svc netd setdefaultifdns
+allow shell dalvikcache_data_file:file rw_file_perms;
+
+# hack for running netcfg eth0 dhcp/ifconfig/ping on console session
+allow shell self:capability { net_admin net_raw setuid dac_override dac_read_search sys_nice };
+allow shell self:packet_socket create_socket_perms;
+allow shell system_prop:property_service set;
+
+# hack for running start adbd/stop adbd on console session
+allow shell ctl_default_prop:property_service set;
+
+# hack for lava mkshrc
+allow shell unlabeled:file r_file_perms;
