@@ -1,0 +1,3 @@
+/data/linaro-android-kernel-test(/.*)?	u:object_r:shell_data_file:s0
+/data/linaro-android-userspace-test(/.*)?	u:object_r:shell_data_file:s0
+/data/nativebenchmark(/.*)?	u:object_r:shell_data_file:s0

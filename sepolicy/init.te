@@ -1,0 +1,3 @@
+userdebug_or_eng(`
+    allow init su:process { transition dyntransition rlimitinh siginh };
+')
