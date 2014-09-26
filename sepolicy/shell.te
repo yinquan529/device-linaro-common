@@ -1,7 +1,7 @@
 allow shell serial_device:chr_file rw_file_perms;
 
-# hack for running svc netd setdefaultifdns
-allow shell dalvikcache_data_file:file rw_file_perms;
+# allow to use ndc command to enable dns work
+allow shell netd_socket:sock_file write;
 
 # hack for running netcfg eth0 dhcp/ifconfig/ping on console session
 allow shell self:packet_socket create_socket_perms;
